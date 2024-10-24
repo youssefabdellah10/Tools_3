@@ -1,0 +1,80 @@
+body {
+    background-color: #f4f7fa; /* Light background for contrast */
+    font-family: 'Arial', sans-serif; /* Clean font */
+    margin: 0; 
+    padding: 20px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333; /* Darker text color for the header */
+    margin-bottom: 20px; 
+  }
+  
+  form {
+    background-color: #ffffff; 
+    padding: 30px; /* Increased padding for a spacious feel */
+    border-radius: 15px; /* Slightly larger border radius */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    max-width: 450px; /* Wider form */
+    margin: 30px auto; 
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Added transform for hover effect */
+  }
+  
+  form:hover {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-5px); /* Lift effect on hover */
+  }
+  
+  label {
+    font-weight: bold; /* Bold labels for emphasis */
+    display: block; /* Full width for labels */
+    margin-bottom: 5px; /* Space below labels */
+    color: #555; /* Slightly lighter text color for labels */
+  }
+  
+  input {
+    display: block;
+    width: 100%;
+    padding: 12px; 
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px; 
+    transition: border 0.3s ease, box-shadow 0.3s ease; 
+  }
+  
+  input:focus {
+    border-color: #4CAF50; 
+    outline: none; 
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); 
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; 
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
+    width: 100%; /* Full width buttons */
+    margin-top: 10px; /* Space above buttons */
+  }
+  
+  button:hover {
+    background-color: #45a049; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  span {
+    color: #d9534f;
+    font-size: 14px; 
+    margin-top: -5px; 
+  }
+  
