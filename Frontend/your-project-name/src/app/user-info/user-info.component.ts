@@ -61,10 +61,13 @@ export class UserInfoComponent {
         body: JSON.stringify(registrationData),
       })
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to register user');
+          if (response.ok) {
+            return response.json();
+          } else {
+            return response.json().then(errData => {
+              throw new Error(errData.message || 'Failed to register user');
+            });
           }
-          return response.json();
         })
         .then(data => {
           console.log('Success:', data);
@@ -75,8 +78,10 @@ export class UserInfoComponent {
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('Registration failed!');
+          alert('Registration failed! ' + error.message);
         });
+    } else {
+      alert('Please fill in all required fields correctly.');
     }
   }
 }  

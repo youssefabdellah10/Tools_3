@@ -31,10 +31,13 @@ export class LoginComponent {
         body: JSON.stringify({ email, password }),
       })
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Invalid email or password');
+          if (response.ok) {
+            return response.json(); 
+          } else {
+            return response.json().then(errData => {
+              throw new Error(errData.message || 'Invalid email or password');
+            });
           }
-          return response.json();
         })
         .then(data => {
           console.log('Login successful:', data);
@@ -42,7 +45,11 @@ export class LoginComponent {
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('Login failed: Invalid email or password');
+          if (error.message === 'Email not registered') {
+            alert('Email not registered. Please register first.');
+          } else {
+            alert('Login failed: Invalid email or password');
+          }
         });
     } else {
       alert('Please enter a valid email and password.');

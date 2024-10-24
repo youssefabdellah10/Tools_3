@@ -20,11 +20,10 @@ def signup():
 def login():
     data = request.get_json()
     user = UserModel.query.filter_by(email=data['email']).first()
-    if not user:
-        return jsonify({'message': 'Email not registered'}), 404  # Change the status code to 404
-    if user.password == data['password']:
+    if user and user.password == data['password']:   
         return jsonify(user.json()), 200
-    return jsonify({'message': 'Wrong email or password'}), 401  # Change to 401 for wrong password
+    return jsonify({'message': 'Wrong email or password'}), 404
+
 
 if __name__ == '__main__':
     with app.app_context():
