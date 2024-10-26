@@ -8,6 +8,8 @@ def signup():
     data = request.get_json()
     if UserModel.query.filter_by(email=data['email']).first():
         return jsonify({'message': 'User already exists'}), 400
+    if UserModel.query.filter_by(phone=data['phone']).first():
+        return jsonify({'message': 'Phone number already exists'}), 400
     new_user = UserModel(name=data['name'], email=data['email'], phone=data['phone'])
     new_user.set_password(data['password'])
     try:
