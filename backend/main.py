@@ -8,7 +8,8 @@ def signup():
     data = request.get_json()
     if UserModel.query.filter_by(email=data['email']).first():
         return jsonify({'message': 'User already exists'}), 400
-    new_user = UserModel(name=data['name'], email=data['email'], password=data['password'])
+    new_user = UserModel(name=data['name'], email=data['email'], phone=data['phone'])
+    new_user.set_password(data['password'])
     try:
         db.session.add(new_user)
         db.session.commit()
@@ -22,7 +23,7 @@ def login():
     user = UserModel.query.filter_by(email=data['email']).first()
     if not user:
         return jsonify({'message': 'Email not registered'}), 404  # Change the status code to 404
-    if user.password == data['password']:
+    if user.check_password(data['password']):
         return jsonify(user.json()), 200
     return jsonify({'message': 'Wrong email or password'}), 401  # Change to 401 for wrong password
 
