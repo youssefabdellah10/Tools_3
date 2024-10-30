@@ -1,0 +1,45 @@
+<h2>Create Order</h2>
+<form [formGroup]="createOrderForm" (ngSubmit)="onCreateOrder()" class="create-order-form">
+  <div class="form-group">
+    <label>Product Name:</label>
+    <input type="text" formControlName="productName" class="form-input" required />
+    <div *ngIf="createOrderForm.get('productName')?.invalid && createOrderForm.get('productName')?.touched" class="error-message">
+      Product name is required.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Quantity:</label>
+    <input type="number" formControlName="quantity" class="form-input" required />
+    <div *ngIf="createOrderForm.get('quantity')?.invalid && createOrderForm.get('quantity')?.touched" class="error-message">
+      <ng-container *ngIf="createOrderForm.get('quantity')?.errors?.['required']">Quantity is required.</ng-container>
+      <ng-container *ngIf="createOrderForm.get('quantity')?.errors?.['min']">Quantity must be at least 1.</ng-container>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Price:</label>
+    <input type="number" formControlName="price" class="form-input" required />
+    <div *ngIf="createOrderForm.get('price')?.invalid && createOrderForm.get('price')?.touched" class="error-message">
+      <ng-container *ngIf="createOrderForm.get('price')?.errors?.['required']">Price is required.</ng-container>
+      <ng-container *ngIf="createOrderForm.get('price')?.errors?.['min']">Price must be a positive number.</ng-container>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Delivery Address:</label>
+    <input type="text" formControlName="location" class="form-input" required />
+    <div *ngIf="createOrderForm.get('location')?.invalid && createOrderForm.get('location')?.touched" class="error-message">
+      Location is required.
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label>Delivery Time (optional):</label>
+    <input type="datetime-local" formControlName="deliveryTime" class="form-input" />
+    <div *ngIf="createOrderForm.get('deliveryTime')?.invalid && createOrderForm.get('deliveryTime')?.touched" class="error-message">
+    </div>
+  </div>
+
+  <button type="submit" class="submit-button" [disabled]="createOrderForm.invalid">Create Order</button>
+</form>
