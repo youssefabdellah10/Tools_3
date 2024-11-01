@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-create-order',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule], // Add CommonModule here
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './create-order.component.html',
   styleUrls: ['./create-order.component.css']
 })
@@ -14,18 +14,17 @@ export class CreateOrderComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.createOrderForm = this.formBuilder.group({
-      productName: ['', Validators.required],
-      quantity: ['', [Validators.required, Validators.min(1)]],
-      price: ['', [Validators.required, Validators.min(0)]],
-      deliveryTime: [''],
-      location: ['', Validators.required]
+      sourceAddress: ['', Validators.required],
+      deliveryAddress: ['', Validators.required],
+      packageDetails: ['', Validators.required],
+      deliveryTime: ['']
     });
   }
-  loading = false; 
+  loading = false;
 
   onCreateOrder() {
     if (this.createOrderForm.valid) {
-      this.loading = true; 
+      this.loading = true;
       const orderData = this.createOrderForm.value;
 
       fetch('http://localhost:5000/orders', {
@@ -44,14 +43,14 @@ export class CreateOrderComponent {
         .then(data => {
           console.log('Order created successfully:', data);
           alert('Order created successfully!');
-          this.createOrderForm.reset(); 
+          this.createOrderForm.reset();
         })
         .catch(error => {
           console.error('Error creating order:', error);
           alert('Failed to create order. Please try again.');
         })
         .finally(() => {
-          this.loading = false; 
+          this.loading = false;
         });
     } else {
       alert('Please fill in all fields correctly.');

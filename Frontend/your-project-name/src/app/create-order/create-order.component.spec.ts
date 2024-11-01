@@ -27,9 +27,9 @@ describe('CreateOrderComponent', () => {
   });
 
   it('should make the form valid when filled correctly', () => {
-    component.createOrderForm.controls['productName'].setValue('Test Product');
-    component.createOrderForm.controls['quantity'].setValue(1);
-    component.createOrderForm.controls['price'].setValue(10.0);
+    component.createOrderForm.controls['sourceAddress'].setValue('Test Source');
+    component.createOrderForm.controls['deliveryAddress'].setValue('Test Delivery');
+    component.createOrderForm.controls['packageDetails'].setValue('Test Package Details');
 
     expect(component.createOrderForm.valid).toBeTruthy();
   });
@@ -37,9 +37,9 @@ describe('CreateOrderComponent', () => {
   it('should call onCreateOrder when the form is submitted', () => {
     spyOn(component, 'onCreateOrder');
 
-    component.createOrderForm.controls['productName'].setValue('Test Product');
-    component.createOrderForm.controls['quantity'].setValue(1);
-    component.createOrderForm.controls['price'].setValue(10.0);
+    component.createOrderForm.controls['sourceAddress'].setValue('Test Source');
+    component.createOrderForm.controls['deliveryAddress'].setValue('Test Delivery');
+    component.createOrderForm.controls['packageDetails'].setValue('Test Package Details');
     component.onCreateOrder();
 
     expect(component.onCreateOrder).toHaveBeenCalled();
