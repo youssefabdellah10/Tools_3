@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class UserInfoComponent {
   userInfoForm: FormGroup;
   
-  @Output() registrationComplete = new EventEmitter<{ email: string; password: string }>(); // Event emitter
+  @Output() registrationComplete = new EventEmitter<{ email: string; password: string; role: string }>(); // Updated EventEmitter to include role
   constructor(private formBuilder: FormBuilder) {
     this.userInfoForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -23,9 +23,11 @@ export class UserInfoComponent {
         Validators.required,
         Validators.minLength(6),
         Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$')
-      ]]
+      ]],
+      role: ['', Validators.required] // Add role field with validation
     });
   }
+
 
   get passwordErrors() {
     const passwordControl = this.userInfoForm.get('password');
@@ -44,12 +46,12 @@ export class UserInfoComponent {
   onSubmit() {
     if (this.userInfoForm.valid) {
       const userData = this.userInfoForm.value;
-  
       const registrationData = {
         name: userData.name,
         email: userData.email,
         password: userData.password,
-        phone: userData.phone
+        phone: userData.phone,
+        role: userData.role
       };
   
       // Send data to the backend using fetch
@@ -74,7 +76,7 @@ export class UserInfoComponent {
           alert('Registration successful!');
           
           // Emit the user data on successful registration
-          this.registrationComplete.emit({ email: userData.email, password: userData.password });
+          this.registrationComplete.emit({ email: userData.email, password: userData.password, role: userData.role }); // Emit role
         })
         .catch(error => {
           console.error('Error:', error);
