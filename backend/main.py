@@ -156,11 +156,11 @@ def get_all_AssignedToCourier_orders():
     orders = OrderModel.query.all()
     assigned_Order = []
     for order in orders:
-        if order.courier_id is not None:
+        if order.courier is not None:
          assigned_Order.append(order)
     if not assigned_Order:
         return  jsonify({'message': 'No assigned orders'}), 200  
-    return jsonify([order.json() for order in orders]), 200
+    return jsonify([order.json() for order in assigned_Order]), 200
 
 # Assign Orders to Courier
 @app.route('/AssignOrder', methods=['PUT'])

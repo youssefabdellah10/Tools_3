@@ -62,7 +62,6 @@ class CourierModel(db.Model):
     def json(self):
         return {"name": self.name,
                 "email": self.email,
-                "status": self.status,
                 "list_of_orders": [orders.json() for orders in self.orders]
         }
     
