@@ -128,6 +128,27 @@ def get_order():
     if not order:
         return jsonify({'message': 'Order not found'}), 404
     return jsonify(order.json()), 200
+#///////////////////////////////////////////////////////////////////////////////
+# Admin features
+
+#Reterive all orders
+@app.route('/admin/AllOrders', methods=['GET'])
+def get_all_orders():
+    orders = OrderModel.query.all()
+    return jsonify([order.json() for order in orders]), 200
+
+# Delete Order
+@app.route('/admin/delete/order', methods=['DELETE'])
+def delete_order():
+    order_id = request.args.get('order_id',type=int)
+    if not order_id:
+        return jsonify({'message': 'Bad Request \n Please enter the order id you want to delete'}), 400
+    order = db.session.get(OrderModel, order_id)
+    if  not order:
+        return jsonify({'message': 'Order ID not found'}), 404
+    db.session.delete(order) 
+    db.session.commit()
+    return jsonify({'message': 'Order is deleted'}), 200
 
 
     
