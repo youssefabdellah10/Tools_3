@@ -26,7 +26,7 @@ def login_for_user():
         return jsonify({'message': 'Email not registered'}), 404  
     if user.check_password(data['password']):
         return jsonify(user.json()), 200
-    return jsonify({'message': 'password'}), 401  
+    return jsonify({'message': 'Invalid password'}), 401 
 
 
 #======================================================================================================================#
@@ -78,7 +78,8 @@ def login_for_courier():
         return jsonify({'message': 'Email not registered'}), 404
     if courier.check_password(data['password']):
         return jsonify(courier.json()), 200
-    return jsonify({'message': 'password'}), 401
+    return jsonify({'message': 'Invalid password'}), 401
+
 
 #======================================================================================================================#
 #=========Orders==================#
@@ -142,104 +143,13 @@ def get_all_orders():
 def delete_order():
     order_id = request.args.get('order_id',type=int)
     if not order_id:
-        return jsonify({'message': 'Bad Request, Please enter the order id you want to delete'}), 400
+        return jsonify({'message': 'Bad Request \n Please enter the order id you want to delete'}), 400
     order = db.session.get(OrderModel, order_id)
     if  not order:
         return jsonify({'message': 'Order ID not found'}), 404
     db.session.delete(order) 
     db.session.commit()
     return jsonify({'message': 'Order is deleted'}), 200
-
-# get all orders assigned to Courier
-@app.route('/admin/Orders_haveAssigned', methods=['GET'])
-def get_all_AssignedToCourier_orders():
-    orders = OrderModel.query.all()
-    assigned_Order = []
-    for order in orders:
-        if order.courier is not None:
-         assigned_Order.append(order)
-    if not assigned_Order:
-        return  jsonify({'message': 'No assigned orders'}), 200  
-    return jsonify([order.json() for order in assigned_Order]), 200
-
-# Assign Orders to Courier
-@app.route('/AssignOrder', methods=['PUT'])
-def assignOrderToCourier():
-    order_id = request.args.get('order_id',type=int)
-    courier_id =request.args.get('courier_id',type=int)
-    if not order_id:
-        return jsonify({'message': 'Bad Request, Please enter the order id you want to assign'}), 400
-    order = db.session.get(OrderModel, order_id)
-    if  not order:
-        return jsonify({'message': 'Order ID not found'}), 404
-    if not courier_id:
-         return jsonify({'message': 'Bad Request, Please enter the Courier id you want to assign to'}), 400
-    courier = db.session.get(CourierModel,courier_id)
-    if not courier:
-        return jsonify({'message': 'Courier ID not found'}), 404
-    order.courier = courier
-    db.session.commit()
-    return jsonify({'message': 'Order is assigned to a courier'}), 200
-
-#========================================================================
-#Couruier features
-
-#get Courier orders
-@app.route('/CourieOrder', methods=['GET'])
-def get_Courier_orders():
-    orders = OrderModel.query.all()
-    courier_id = request.args.get('courier_id',type=int)
-    if not courier_id:
-        return jsonify({'message': 'Bad request , Please enter a correct ID for the courier'}), 400
-    courier = db.session.get(CourierModel,courier_id)
-    if not courier:
-        return jsonify({'message': 'Courier ID not found'}), 404
-    assigned_Order = []
-    for order in orders:
-        if order.courier is courier:
-         assigned_Order.append(order)
-    if not assigned_Order:
-        return  jsonify({'message': 'No assigned orders'}), 200  
-    return jsonify([order.json() for order in assigned_Order]), 200
-
-# Accept Order
-@app.route('/acceptOrder', methods=['PUT'])
-def accept_order():
-    data = request.get_json() 
-    order_id = data.get('order_id')
-    order = OrderModel.query.get(order_id)
-    order.status = 'picked up'
-    db.session.commit()
-    return jsonify({'message': 'Order is accepted successfully'}),200
-
-# Decline Order
-@app.route('/DeclineOrder', methods=['PUT'])
-def decline_order():
-    data = request.get_json() 
-    order_id = data.get('order_id')
-    order = OrderModel.query.get(order_id)
-    order.courier = None
-    db.session.commit()
-    return jsonify({'message': 'Order is declined successfully'}),200
-
-
-#============================================================================
-#Courier and Admin Common features
-
-# Update Order Status
-@app.route('/UpdateOrderStatus', methods=['PUT'])
-def update_orderStatus():
-    order_id = request.args.get('order_id',type=int)
-    status = request.args.get("status",type=str)
-    if not order_id:
-        return jsonify({'message': 'Bad Request, Please enter the order id you want to update'}), 400
-    order = db.session.get(OrderModel, order_id)
-    if  not order:
-        return jsonify({'message': 'Order ID not found'}), 404
-    order.status = status 
-    db.session.commit()
-    return jsonify({'message': 'Order status is updated'}), 200
-    
 
 
     
