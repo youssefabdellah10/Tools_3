@@ -9,6 +9,7 @@ class UserModel(db.Model):
     phone = db.Column(db.String(100), unique = False, nullable=False)
     password = db.Column(db.String(256), unique =False, nullable=False)
     orders = db.relationship('OrderModel', back_populates='user',lazy='dynamic')
+    role = db.column(db.String(10),unique= False, nullable= False,default ='Customer')
     
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -32,6 +33,7 @@ class AdminModel(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     phone = db.Column(db.String(100), unique = False, nullable=False)
     password = db.Column(db.String(256), unique =False, nullable=False)
+    role = db.column(db.String(10),unique= False, nullable= False,default ='Admin')
     
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -53,6 +55,7 @@ class CourierModel(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(256), unique =False, nullable=False)
     orders = db.relationship('OrderModel', back_populates='courier',lazy='dynamic')
+    role = db.column(db.String(10),unique= False, nullable= False,default ='Courier')
 
     
     def set_password(self, password):
