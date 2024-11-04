@@ -85,7 +85,8 @@ def create_order():
 
 @app.route('/users/order', methods=['GET'])
 def get_user_orders():
-    user_id = request.args.get('user_id', type=int)
+    data = request.get_json() 
+    user_id = data.get('user_id')
     if not user_id:
         return jsonify({'message': 'User ID is required'}), 400
 
@@ -98,7 +99,8 @@ def get_user_orders():
 
 @app.route('/users/order', methods=['GET'])
 def get_order():
-    user_id = request.args.get('user_id',type=int)
+    data = request.get_json() 
+    user_id = data.get('user_id')
     order_id = request.args.get('order_id',type=int)
     if not user_id or not order_id:
         return jsonify({'message': 'User ID and Order ID are required'}), 400
