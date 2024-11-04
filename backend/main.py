@@ -3,82 +3,64 @@ from config import app, db
 from model import UserModel , AdminModel, CourierModel, OrderModel
 
 #======================================================================================================================#
-#=========Users==================#
-@app.route('/users/signup', methods=['POST'])
-def signup_for_user():
+#=========Signup/Login==================#
+
+@app.route('/signup', methods=['POST'])
+def signup():
     data = request.get_json()
-    if UserModel.query.filter_by(email=data['email']).first():
+    required_fields = ['name', 'email', 'phone', 'password', 'role']
+    if not data or not all(key in data for key in required_fields):
+        return jsonify({'message': 'Invalid request'}), 400
+
+    existing_user = UserModel.query.filter_by(email=data['email']).first() or \
+                    CourierModel.query.filter_by(email=data['email']).first() or \
+                    AdminModel.query.filter_by(email=data['email']).first()
+    if existing_user:
         return jsonify({'message': 'User already exists'}), 400
-    new_user = UserModel(name=data['name'], email=data['email'], phone=data['phone'])
-    new_user.set_password(data['password'])
+
+    def create_user(role, model):
+        new_user = model(name=data['name'], email=data['email'], phone=data['phone'], role=role)
+        new_user.set_password(data['password'])
+        return new_user
+
+    role = data['role'].strip().lower()
+    if role == 'customer':
+        new_user = create_user(role, UserModel)
+    elif role == 'courier':
+        new_user = create_user(role, CourierModel)
+    elif role == 'admin':
+        new_user = create_user(role, AdminModel)
+    else:
+        return jsonify({'message': 'Invalid role'}), 400
+
     try:
         db.session.add(new_user)
         db.session.commit()
     except Exception as e:
         return jsonify({'message': str(e)}), 400
+
     return jsonify(new_user.json()), 201
 
-@app.route('/users/login', methods=['POST'])
-def login_for_user():
+
+@app.route('/login', methods=['POST'])
+def login():
     data = request.get_json()
+    if not data or not all(key in data for key in ['email', 'password']):
+        return jsonify({'message': 'Invalid request'}), 400
+
     user = UserModel.query.filter_by(email=data['email']).first()
-    if not user:
-        return jsonify({'message': 'Email not registered'}), 404  
-    if user.check_password(data['password']):
-        return jsonify(user.json()), 200
-    return jsonify({'message': 'Invalid password'}), 401 
-
-
-#======================================================================================================================#
-#=========Admins==================#
-@app.route('/admins/signup', methods=['POST'])
-def signup_for_admin():
-    data = request.get_json()
-    if AdminModel.query.filter_by(email=data['email']).first():
-        return jsonify({'message': 'Admin already exists'}), 400
-    new_admin = AdminModel(name=data['name'], email=data['email'], phone=data['phone'])
-    new_admin.set_password(data['password'])
-    try:
-        db.session.add(new_admin)
-        db.session.commit()
-    except Exception as e:
-        return jsonify({'message': str(e)}), 400
-    return jsonify(new_admin.json()), 201
-
-@app.route('/admins/login', methods=['POST'])
-def login_for_admin():
-    data = request.get_json()
-    admin = AdminModel.query.filter_by(email=data['email']).first()
-    if not admin:
-        return jsonify({'message': 'Email not registered'}), 404
-    if admin.check_password(data['password']):
-        return jsonify(admin.json()), 200
-
-#======================================================================================================================#
-#=========Couriers==================#
-@app.route('/couriers/signup', methods=['POST'])
-def signup_for_courier():
-    data = request.get_json()
-    if CourierModel.query.filter_by(email=data['email']).first():
-        return jsonify({'message': 'Courier already exists'}), 400
-    new_courier = CourierModel(name=data['name'], email=data['email'])
-    new_courier.set_password(data['password'])
-    try:
-        db.session.add(new_courier)
-        db.session.commit()
-    except Exception as e:
-        return jsonify({'message': str(e)}), 400
-    return jsonify(new_courier.json()), 201
-
-@app.route('/couriers/login', methods=['POST'])
-def login_for_courier():
-    data = request.get_json()
     courier = CourierModel.query.filter_by(email=data['email']).first()
-    if not courier:
-        return jsonify({'message': 'Email not registered'}), 404
-    if courier.check_password(data['password']):
-        return jsonify(courier.json()), 200
-    return jsonify({'message': 'Invalid password'}), 401
+    admin = AdminModel.query.filter_by(email=data['email']).first()
+
+    if user and user.check_password(data['password']):
+        return jsonify({'message': 'Logged in successfully', 'role': 'user'}), 200
+    elif courier and courier.check_password(data['password']):
+        return jsonify({'message': 'Logged in successfully', 'role': 'courier'}), 200
+    elif admin and admin.check_password(data['password']):
+        return jsonify({'message': 'Logged in successfully', 'role': 'admin'}), 200
+    else:
+        return jsonify({'message': 'Incorrect email or password, please try again'}), 404
+
 
 
 #======================================================================================================================#

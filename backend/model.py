@@ -50,6 +50,7 @@ class CourierModel(db.Model):
     name = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(256), unique=False, nullable=False)
+    phone = db.Column(db.String(100), unique=False, nullable=False)
     orders = db.relationship('OrderModel', back_populates='courier', lazy='dynamic')
     role = db.Column(db.String(10), unique=False, nullable=False, default='Courier')  # Fixed here
     
