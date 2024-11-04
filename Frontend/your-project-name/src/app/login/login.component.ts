@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  @Output() loginSuccess = new EventEmitter<void>();
+  @Output() loginSuccess = new EventEmitter<string>(); // Emit user role
 
   constructor(private formBuilder: FormBuilder, private router: Router) {
     this.loginForm = this.formBuilder.group({
@@ -25,8 +25,7 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
 
-      // Send the login data to the backend using fetch
-      fetch('http://localhost:5000/users/login', {
+      fetch('http://localhost:5000/login', {  // Updated endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +34,7 @@ export class LoginComponent {
       })
         .then(response => {
           if (response.ok) {
-            return response.json(); 
+            return response.json();
           } else {
             return response.json().then(errData => {
               throw new Error(errData.message || 'Invalid email or password');
@@ -44,22 +43,30 @@ export class LoginComponent {
         })
         .then(data => {
           console.log('Login successful:', data);
-          this.loginSuccess.emit();
+          
+          // Emit user role
+          this.loginSuccess.emit(data.role); 
 
-          // Check the role and navigate accordingly
-          if (data.role === 'user') {
-            alert('Login successful.');
-            this.router.navigate(['/create-order']); // Navigate to CreateOrderComponent
-          } else if (data.role === 'courier') {
-            alert('Welcome, Courier.');
-            this.router.navigate(['/assigned-orders']); // Navigate to AssignedOrdersComponent
-          } else {
-            alert('You do not have permission to access this page.'); // Alert for unauthorized access
+          // Navigate based on role
+          switch (data.role) {
+            case 'user':
+              alert('Login successful.');
+              this.router.navigate(['/create-order']);  // Navigate to CreateOrderComponent
+              break;
+            case 'courier':
+              alert('Welcome, Courier.');
+              this.router.navigate(['/assigned-orders']);  // Navigate to AssignedOrdersComponent
+              break;
+            case 'admin':
+              alert('Admin access granted.');
+              this.router.navigate(['/admin-dashboard']);  // Adjust to your admin route
+              break;
+            default:
+              alert('You do not have permission to access this page.');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          // Display error message based on specific conditions
           if (error.message === 'Email not registered') {
             alert('Email not registered. Please register first.');
           } else {

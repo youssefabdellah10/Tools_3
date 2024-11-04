@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+interface Order {
+  id: number;
+  status: string;
+  details: string;
+}
 
 @Component({
   selector: 'app-assigned-orders',
@@ -6,24 +15,36 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./assigned-orders.component.css']
 })
 export class AssignedOrdersComponent implements OnInit {
-  assignedOrders: any[] = []; // Replace with appropriate type
+  orders: Order[] = [];
+  courierId: number = 1; // Replace with actual courier ID or get it from authentication if available
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Fetch assigned orders from the backend (implement the actual service call)
-    this.fetchAssignedOrders();
+    this.getAssignedOrders();
   }
 
-  fetchAssignedOrders() {
-    // Call your service to get assigned orders and assign them to this.assignedOrders
+  getAssignedOrders(): void {
+    this.http.get<Order[]>(`/CourieOrder?courier_id=${this.courierId}`)
+      .pipe(catchError(error => of([]))) // Handle errors here
+      .subscribe((data) => {
+        this.orders = data;
+      });
   }
 
-  acceptOrder(orderId: string) {
-    // Logic to accept the order
+  acceptOrder(orderId: number): void {
+    this.http.put('/acceptOrder', { order_id: orderId })
+      .subscribe(() => {
+        this.orders = this.orders.map(order =>
+          order.id === orderId ? { ...order, status: 'picked up' } : order
+        );
+      });
   }
 
-  declineOrder(orderId: string) {
-    // Logic to decline the order
+  declineOrder(orderId: number): void {
+    this.http.put('/DeclineOrder', { order_id: orderId })
+      .subscribe(() => {
+        this.orders = this.orders.filter(order => order.id !== orderId);
+      });
   }
 }

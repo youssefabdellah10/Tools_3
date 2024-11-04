@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-user-info',
   standalone: true,
@@ -12,8 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class UserInfoComponent {
   userInfoForm: FormGroup;
-  
-  @Output() registrationComplete = new EventEmitter<{ email: string; password: string; role: string }>(); // Updated EventEmitter to include role
+
+  @Output() registrationComplete = new EventEmitter<{ email: string; password: string; role: string }>();
+
   constructor(private formBuilder: FormBuilder) {
     this.userInfoForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -24,10 +24,9 @@ export class UserInfoComponent {
         Validators.minLength(6),
         Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$')
       ]],
-      role: ['', Validators.required] // Add role field with validation
+      role: ['', Validators.required]
     });
   }
-
 
   get passwordErrors() {
     const passwordControl = this.userInfoForm.get('password');
@@ -53,37 +52,40 @@ export class UserInfoComponent {
         phone: userData.phone,
         role: userData.role
       };
-  
+
       // Send data to the backend using fetch
-      fetch('http://localhost:5000/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(registrationData),
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            return response.json().then(errData => {
-              throw new Error(errData.message || 'Failed to register user');
-            });
-          }
-        })
-        .then(data => {
-          console.log('Success:', data);
-          alert('Registration successful!');
-          
-          // Emit the user data on successful registration
-          this.registrationComplete.emit({ email: userData.email, password: userData.password, role: userData.role }); // Emit role
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Registration failed! ' + error.message);
-        });
+      this.registerUser(registrationData);
     } else {
       alert('Please fill in all required fields correctly.');
     }
   }
-}  
+
+  private registerUser(data: any) {
+    fetch('http://localhost:5000/signup', {  // Adjusted endpoint to match your backend route
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errData => {
+          throw new Error(errData.message || 'Failed to register user');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Success:', data);
+      alert('Registration successful!');
+
+      // Emit the user data on successful registration
+      this.registrationComplete.emit({ email: data.email, password: data.password, role: data.role });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Registration failed! ' + error.message);
+    });
+  }
+}

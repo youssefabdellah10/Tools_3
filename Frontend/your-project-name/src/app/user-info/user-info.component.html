@@ -42,7 +42,7 @@
     <label>Role:</label>
     <select formControlName="role">
       <option value="" disabled selected>Select your role</option>
-      <option value="user">User</option>
+      <option value="customer">User</option>
       <option value="courier">Courier</option>
       <option value="admin">Admin</option>
     </select>
@@ -50,6 +50,7 @@
       <span *ngIf="userInfoForm.get('role')?.errors?.['required']">Role is required.</span>
     </div>
   </div>
+  
 
   <button type="submit" [disabled]="userInfoForm.invalid">Submit</button>
 
