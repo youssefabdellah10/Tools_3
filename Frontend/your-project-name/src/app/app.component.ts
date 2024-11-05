@@ -4,7 +4,10 @@ import { LoginComponent } from './login/login.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
 import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.component'; // Import AssignedOrdersComponent
+import { ManageOrdersComponent } from './Admin/manage-orders/manage-orders.component';
+import { AssignOrderToCourierComponent } from './Admin/assign-order-to-courier/assign-order-to-courier.component';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -32,13 +35,31 @@ import { CommonModule } from '@angular/common';
         <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
       </div>
 
+      </div>
+
+      <div *ngIf="loggedIn">
+        <!-- Show different buttons based on whether the user is an admin -->
+        <div class="button-group" *ngIf="isAdmin; else userButtons">
+          <button class="btn" (click)="loadManageOrders()">Manage Orders</button>
+          <button class="btn secondary" (click)="loadAssignOrder()">Assign Order to Courier</button>
+        </div>
+
+        <ng-template #userButtons>
+          <div class="button-group">
+            <button class="btn" (click)="loadCreateOrder()">Create Order</button>
+            <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Dynamic content will be loaded here -->
       <ng-container #container></ng-container>
     </div>
   `,
   styles: [
     `
     .container {
-      max-width: 500px;
+      max-width: 700px;
       margin: 60px auto;
       padding: 30px;
       border-radius: 12px;
@@ -100,8 +121,9 @@ export class AppComponent {
   @ViewChild('container', { read: ViewContainerRef }) container!: ViewContainerRef;
   loggedIn = false;
   isCourier = false;
+  isAdmin = false; // Add logic to set this based on user role after login
 
-  constructor(private resolver: ComponentFactoryResolver) {}
+  constructor(private resolver: ComponentFactoryResolver, private router: Router) {}
 
   loadUserInfo() {
     this.container.clear(); 
@@ -124,8 +146,20 @@ export class AppComponent {
         this.loadAssignedOrders();
       } else {
         this.loadCreateOrder();
+      console.log('Login successful, updating loggedIn status and navigating based on role');
+      this.loggedIn = true; 
+      this.isAdmin = role === 'admin'; // Set isAdmin based on the user's role
+      this.container.clear(); 
+
+      if (role === 'admin') {
+        this.router.navigate(['/admin-dashboard']);
+      } else if (role === 'user') {
+        this.router.navigate(['/create-order']);
+      } else if (role === 'courier') {
+        this.router.navigate(['/assigned-orders']);
       }
-    });
+    }});
+    
   }
 
   loadCreateOrder() {
@@ -143,6 +177,17 @@ export class AppComponent {
   loadAssignedOrders() {
     this.container.clear();
     const assignedOrdersFactory = this.resolver.resolveComponentFactory(AssignedOrdersComponent);
-    this.container.createComponent(assignedOrdersFactory);
+    this.container.createComponent(assignedOrdersFactory);}
+  loadManageOrders() {
+    this.container.clear();
+    const manageOrdersFactory = this.resolver.resolveComponentFactory(ManageOrdersComponent);
+    this.container.createComponent(manageOrdersFactory);
   }
+
+  loadAssignOrder() {
+    this.container.clear();
+    const assignOrderFactory = this.resolver.resolveComponentFactory(AssignOrderToCourierComponent);
+    this.container.createComponent(assignOrderFactory);
+  }
+  
 }

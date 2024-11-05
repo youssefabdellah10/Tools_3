@@ -1,0 +1,33 @@
+<div class="assigned-orders">
+  <h1>Assign Orders to Couriers</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Package Details</th>
+        <th>Status</th>
+        <th>Assigned Courier</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.pickup_location }}</td>
+        <td>{{ order.dropoff_location }}</td>
+        <td>{{ order.package_details }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <select [(ngModel)]="order.assignedCourier.id" class="courier-select"> 
+            <option *ngFor="let courier of couriers" [value]="courier.id">{{ courier.name }}</option>
+          </select>
+        </td>
+        <td>
+          <button class="reassign-btn" (click)="reassignOrder(order.id, order.assignedCourier.id)">Reassign</button> 
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

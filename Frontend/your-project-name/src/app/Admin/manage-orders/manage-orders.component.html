@@ -1,0 +1,34 @@
+<div class="manage-orders">
+  <h1>Manage Orders</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Pickup Location</th>
+        <th>Dropoff Location</th>
+        <th>Package Details</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.pickup_location }}</td>
+        <td>{{ order.dropoff_location }}</td>
+        <td>{{ order.package_details }}</td>
+        <td>
+          <select [(ngModel)]="order.status" (change)="updateOrderStatus(order)">
+            <option value="pending">Pending</option>
+            <option value="in transit">In Transit</option>
+            <option value="delivered">Delivered</option>
+            <option value="canceled">Canceled</option>
+          </select>
+        </td>
+        <td>
+          <button class="delete-btn" (click)="deleteOrder(order.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
