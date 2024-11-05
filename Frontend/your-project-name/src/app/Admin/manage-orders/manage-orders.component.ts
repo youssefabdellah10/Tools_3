@@ -70,22 +70,19 @@ export class ManageOrdersComponent implements OnInit {
   }
   
   async deleteOrder(orderId: number): Promise<void> {
-    if (confirm('Are you sure you want to delete this order?')) {
-      try {
-        const response = await fetch(`http://localhost:5000/admin/delete/order`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ order_id: orderId }),
-        });
-        if (!response.ok) {
-          throw new Error('Failed to delete order');
-        }
-        await this.fetchOrders(); 
-      } catch (error) {
-        console.error('Error deleting order:', error);
+  if (confirm('Are you sure you want to delete this order?')) {
+    try {
+      const response = await fetch(`http://localhost:5000/admin/delete/order?order_id=${orderId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete order');
       }
+      await this.fetchOrders(); 
+    } catch (error) {
+      console.error('Error deleting order:', error);
     }
   }
+}
+
 }

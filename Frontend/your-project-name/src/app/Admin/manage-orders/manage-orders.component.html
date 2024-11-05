@@ -17,13 +17,12 @@
         <td>{{ order.pickup_location }}</td>
         <td>{{ order.dropoff_location }}</td>
         <td>{{ order.package_details }}</td>
-        <td>
-          <select [(ngModel)]="order.status" (change)="updateOrderStatus(order)">
+        <td class="status-cell">
+          <select [(ngModel)]="order.status">
             <option value="pending">Pending</option>
-            <option value="in transit">In Transit</option>
-            <option value="delivered">Delivered</option>
-            <option value="canceled">Canceled</option>
+            <option value="Delivered">Delivered</option>
           </select>
+          <button class="confirm-btn" (click)="updateOrderStatus(order)">Confirm</button>
         </td>
         <td>
           <button class="delete-btn" (click)="deleteOrder(order.id)">Delete</button>

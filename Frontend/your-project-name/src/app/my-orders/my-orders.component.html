@@ -1,15 +1,25 @@
-<h2>My Orders</h2>
+<h2 class="orders-title">My Orders</h2>
 
 <div *ngIf="loading" class="loading-spinner"></div>
 
 <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-<div *ngIf="!loading && orders.length === 0">No orders found.</div>
+<div *ngIf="!loading && orders.length === 0" class="no-orders-message">No orders found.</div>
 
 <ul *ngIf="!loading && orders.length > 0" class="orders-list">
-  <li *ngFor="let order of orders" class="order-item">
-    <strong>Order ID:</strong><a [routerLink]="['/order-details', order.id]">{{ order.id }}</a> <br />
-    <strong>Status:</strong> <span [ngClass]="{'delivered': order.status === 'delivered', 'pending': order.status === 'pending'}">{{ order.status }}</span> <br />
+  <li *ngFor="let order of orders" class="order-item" (click)="navigateToOrderDetails(order.id)">
+    <div class="order-details">
+      <strong>Order ID:</strong> {{ order.id }}
+    </div>
+
+    <div class="order-status">
+      <strong>Status:</strong>
+      <span [ngClass]="{'delivered': order.status === 'delivered', 'pending': order.status === 'pending'}">
+        {{ order.status }}
+      </span>
+    </div>
+
     <hr class="order-separator" />
   </li>
 </ul>
+

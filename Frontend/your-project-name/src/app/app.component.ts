@@ -30,13 +30,6 @@ import { Router } from '@angular/router';
         <button class="btn primary" (click)="loadAssignedOrders()">Assigned Orders</button>
       </div>
 
-      <div *ngIf="loggedIn && !isCourier" class="button-group">
-        <button class="btn primary" (click)="loadCreateOrder()">Create Order</button>
-        <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
-      </div>
-
-      </div>
-
       <div *ngIf="loggedIn">
         <!-- Show different buttons based on whether the user is an admin -->
         <div class="button-group" *ngIf="isAdmin; else userButtons">
@@ -121,7 +114,7 @@ export class AppComponent {
   @ViewChild('container', { read: ViewContainerRef }) container!: ViewContainerRef;
   loggedIn = false;
   isCourier = false;
-  isAdmin = false; // Add logic to set this based on user role after login
+  isAdmin = false; 
 
   constructor(private resolver: ComponentFactoryResolver, private router: Router) {}
 

@@ -86,8 +86,7 @@ def create_order():
 
 @app.route('/users/order', methods=['GET'])
 def get_user_orders():
-    data = request.get_json() 
-    user_id = data.get('user_id')
+    user_id = request.args.get('user_id')  
     if not user_id:
         return jsonify({'message': 'User ID is required'}), 400
 
@@ -97,6 +96,7 @@ def get_user_orders():
 
     orders = OrderModel.query.filter_by(user_id=user_id).all()
     return jsonify([order.json() for order in orders]), 200
+
 
 @app.route('/users/order', methods=['GET'])
 def get_order():

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';  
 
 @Component({
   selector: 'app-login',
@@ -12,9 +13,13 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  @Output() loginSuccess = new EventEmitter<string>(); // Emit user role
+  @Output() loginSuccess = new EventEmitter<string>(); 
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(
+    private formBuilder: FormBuilder, 
+    private router: Router, 
+    private authService: AuthService  
+  ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -44,10 +49,13 @@ export class LoginComponent {
         .then(data => {
           console.log('Login successful:', data);
           
-          // Emit user role
-          this.loginSuccess.emit(data.role); // Emit role here
+        
+          this.authService.setUserId(data.userId); 
+          localStorage.setItem('userId', data.userId);  
+          
+       
+          this.loginSuccess.emit(data.role); 
   
-          // You can remove the switch statement for navigation
           alert('Login successful.');
         })
         .catch(error => {
@@ -58,4 +66,4 @@ export class LoginComponent {
       alert('Please enter a valid email and password.');
     }
   }
-}  
+}
