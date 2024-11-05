@@ -7,7 +7,7 @@ import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.compo
 export const routes: Routes = [
   { path: 'create-order', component: CreateOrderComponent },
   { path: 'my-orders', component: MyOrdersComponent },
-  { path: 'assigned-orders', component: AssignedOrdersComponent },  // Added route
+  { path: 'assigned-orders', component: AssignedOrdersComponent }, 
   { path: '', component: LoginComponent, pathMatch: 'full' }, 
   { path: '**', redirectTo: '' } 
 ];

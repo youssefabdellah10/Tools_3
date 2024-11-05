@@ -11,23 +11,27 @@ import { CommonModule } from '@angular/common';
 })
 export class CreateOrderComponent {
   createOrderForm: FormGroup;
+  loading = false;
+  userId = 1; // Set this to the actual user ID from your authentication context
 
   constructor(private formBuilder: FormBuilder) {
     this.createOrderForm = this.formBuilder.group({
-      sourceAddress: ['', Validators.required],
-      deliveryAddress: ['', Validators.required],
-      packageDetails: ['', Validators.required],
-      deliveryTime: ['']
+      pickup_location: ['', Validators.required],
+      dropoff_location: ['', Validators.required],
+      package_details: ['', Validators.required], 
+      delivery_time: [''] // This remains the same
     });
   }
-  loading = false;
 
   onCreateOrder() {
     if (this.createOrderForm.valid) {
       this.loading = true;
-      const orderData = this.createOrderForm.value;
+      const orderData = {
+        ...this.createOrderForm.value,
+        user_id: this.userId // Include user ID in the order data
+      };
 
-      fetch('http://localhost:5000/orders', {
+      fetch('http://localhost:5000/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

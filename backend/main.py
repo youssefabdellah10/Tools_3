@@ -48,19 +48,20 @@ def login():
     if not data or not all(key in data for key in ['email', 'password']):
         return jsonify({'message': 'Invalid request'}), 400
 
+    # Attempt to find the user by email
     user = UserModel.query.filter_by(email=data['email']).first()
     courier = CourierModel.query.filter_by(email=data['email']).first()
     admin = AdminModel.query.filter_by(email=data['email']).first()
 
     if user and user.check_password(data['password']):
-        return jsonify({'message': 'Logged in successfully', 'role': 'user'}), 200
+        return jsonify({'message': 'Logged in successfully', 'role': 'user', 'userId': user.id}), 200 
     elif courier and courier.check_password(data['password']):
-        return jsonify({'message': 'Logged in successfully', 'role': 'courier'}), 200
+        return jsonify({'message': 'Logged in successfully', 'role': 'courier', 'courierId': courier.id}), 200 
+
     elif admin and admin.check_password(data['password']):
-        return jsonify({'message': 'Logged in successfully', 'role': 'admin'}), 200
+        return jsonify({'message': 'Logged in successfully', 'role': 'admin', 'userId': admin.id}), 200 
     else:
         return jsonify({'message': 'Incorrect email or password, please try again'}), 404
-
 
 
 #======================================================================================================================#
@@ -139,22 +140,25 @@ def delete_order():
     #Couruier features
 
 #get Courier orders
-@app.route('/CourieOrder', methods=['GET'])
-def get_Courier_orders():
-    orders = OrderModel.query.all()
-    courier_id = request.args.get('courier_id',type=int)
+# Get Courier Orders
+@app.route('/CourierOrder', methods=['GET'])  # Corrected endpoint
+def get_courier_orders():
+    courier_id = request.args.get('courier_id', type=int)
+    
     if not courier_id:
-        return jsonify({'message': 'Bad request , Please enter a correct ID for the courier'}), 400
-    courier = db.session.get(CourierModel,courier_id)
+        return jsonify({'message': 'Bad request, Please enter a correct ID for the courier'}), 400
+
+    courier = db.session.get(CourierModel, courier_id)
     if not courier:
         return jsonify({'message': 'Courier ID not found'}), 404
-    assigned_Order = []
-    for order in orders:
-        if order.courier is courier:
-         assigned_Order.append(order)
-    if not assigned_Order:
-        return  jsonify({'message': 'No assigned orders'}), 200  
-    return jsonify([order.json() for order in assigned_Order]), 200
+    
+    # Fetch assigned orders directly related to the courier
+    assigned_orders = OrderModel.query.filter(OrderModel.courier_id == courier_id).all() 
+
+    if not assigned_orders:
+        return jsonify({'message': 'No assigned orders'}), 200  
+
+    return jsonify([order.json() for order in assigned_orders]), 200
 
 # Accept Order
 @app.route('/acceptOrder', methods=['PUT'])

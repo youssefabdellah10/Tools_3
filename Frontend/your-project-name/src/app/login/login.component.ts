@@ -24,8 +24,8 @@ export class LoginComponent {
   onLogin() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-
-      fetch('http://localhost:5000/login', {  // Updated endpoint
+  
+      fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,36 +45,17 @@ export class LoginComponent {
           console.log('Login successful:', data);
           
           // Emit user role
-          this.loginSuccess.emit(data.role); 
-
-          // Navigate based on role
-          switch (data.role) {
-            case 'user':
-              alert('Login successful.');
-              this.router.navigate(['/create-order']);  // Navigate to CreateOrderComponent
-              break;
-            case 'courier':
-              alert('Welcome, Courier.');
-              this.router.navigate(['/assigned-orders']);  // Navigate to AssignedOrdersComponent
-              break;
-            case 'admin':
-              alert('Admin access granted.');
-              this.router.navigate(['/admin-dashboard']);  // Adjust to your admin route
-              break;
-            default:
-              alert('You do not have permission to access this page.');
-          }
+          this.loginSuccess.emit(data.role); // Emit role here
+  
+          // You can remove the switch statement for navigation
+          alert('Login successful.');
         })
         .catch(error => {
           console.error('Error:', error);
-          if (error.message === 'Email not registered') {
-            alert('Email not registered. Please register first.');
-          } else {
-            alert('Login failed: ' + error.message);
-          }
+          alert('Login failed: ' + error.message);
         });
     } else {
       alert('Please enter a valid email and password.');
     }
   }
-}
+}  

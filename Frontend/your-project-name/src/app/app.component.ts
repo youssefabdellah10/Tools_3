@@ -3,6 +3,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { LoginComponent } from './login/login.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
+import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.component'; // Import AssignedOrdersComponent
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,20 +16,22 @@ import { CommonModule } from '@angular/common';
       
       <div *ngIf="!loggedIn">
         <div class="button-group">
-          <button class="btn" (click)="loadUserInfo()">Register</button>
+          <button class="btn primary" (click)="loadUserInfo()">Register</button>
           <button class="btn secondary" (click)="loadLogin()">Login</button>
         </div>
 
-        <!-- Container for dynamically loaded components -->
         <ng-container #container></ng-container>
       </div>
 
-      <div *ngIf="loggedIn" class="button-group">
-        <button class="btn" (click)="loadCreateOrder()">Create Order</button>
+      <div *ngIf="loggedIn && isCourier" class="button-group">
+        <button class="btn primary" (click)="loadAssignedOrders()">Assigned Orders</button>
+      </div>
+
+      <div *ngIf="loggedIn && !isCourier" class="button-group">
+        <button class="btn primary" (click)="loadCreateOrder()">Create Order</button>
         <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
       </div>
 
-      <!-- This will be the container for loaded components -->
       <ng-container #container></ng-container>
     </div>
   `,
@@ -96,6 +99,7 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   @ViewChild('container', { read: ViewContainerRef }) container!: ViewContainerRef;
   loggedIn = false;
+  isCourier = false;
 
   constructor(private resolver: ComponentFactoryResolver) {}
 
@@ -110,11 +114,17 @@ export class AppComponent {
     const loginFactory = this.resolver.resolveComponentFactory(LoginComponent);
     const loginComponentRef: ComponentRef<LoginComponent> = this.container.createComponent(loginFactory);
 
-    
-    loginComponentRef.instance.loginSuccess.subscribe(() => {
+    loginComponentRef.instance.loginSuccess.subscribe((role: string) => {
       console.log('Login successful, updating loggedIn status');
       this.loggedIn = true; 
-      this.container.clear(); 
+      this.isCourier = role === 'courier';
+      this.container.clear();
+      
+      if (this.isCourier) {
+        this.loadAssignedOrders();
+      } else {
+        this.loadCreateOrder();
+      }
     });
   }
 
@@ -128,5 +138,11 @@ export class AppComponent {
     this.container.clear(); 
     const myOrdersFactory = this.resolver.resolveComponentFactory(MyOrdersComponent);
     this.container.createComponent(myOrdersFactory); 
+  }
+
+  loadAssignedOrders() {
+    this.container.clear();
+    const assignedOrdersFactory = this.resolver.resolveComponentFactory(AssignedOrdersComponent);
+    this.container.createComponent(assignedOrdersFactory);
   }
 }
