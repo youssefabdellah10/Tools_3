@@ -3,27 +3,31 @@
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
 }
 
 h1 {
   font-family: 'Manrope', sans-serif;
-  font-size: 28px;
+  font-size: 32px;
   margin-bottom: 20px;
   color: #333;
+  text-align: center;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
   margin-top: 20px;
+  table-layout: fixed;
 }
 
 th, td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 th {
@@ -40,23 +44,32 @@ tr:hover {
 }
 
 .status-cell, .courier-cell, .actions-cell {
- 
   text-align: center;
 }
 
 .status-cell, .courier-cell {
-
   align-items: center;
 }
 
 select {
-  padding: 2px;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
   font-size: 14px;
   width: 100%;
   margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 .confirm-btn, .delete-btn {
@@ -84,4 +97,28 @@ select {
 
 .delete-btn:hover {
   background-color: #c82333;
+}
+
+.delete-btn:focus, .confirm-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+td button {
+  width: auto;
+  margin: 5px;
+}
+
+form {
+  display: block;
+  width: 100%;
+}
+
+table th, table td {
+  text-align: center;
 }

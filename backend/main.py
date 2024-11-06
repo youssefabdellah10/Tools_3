@@ -193,24 +193,44 @@ def decline_order():
     order.courier = None
     db.session.commit()
     return jsonify({'message': 'Order is declined successfully'}),200
-# Assign Orders to Courier
+# Assign Orders to Courier (Initial Assignment)
 @app.route('/AssignOrder', methods=['PUT'])
-def assignOrderToCourier():
-    order_id = request.args.get('order_id',type=int)
-    courier_id =request.args.get('courier_id',type=int)
+def assign_order_to_courier():
+    data = request.get_json()
+
+    order_id = data.get('orderId')  
+    courier_id = data.get('courierId')  
+
     if not order_id:
         return jsonify({'message': 'Bad Request, Please enter the order id you want to assign'}), 400
+
     order = db.session.get(OrderModel, order_id)
-    if  not order:
+    if not order:
         return jsonify({'message': 'Order ID not found'}), 404
+
     if not courier_id:
-         return jsonify({'message': 'Bad Request, Please enter the Courier id you want to assign to'}), 400
-    courier = db.session.get(CourierModel,courier_id)
+        return jsonify({'message': 'Bad Request, Please enter the Courier id you want to assign to'}), 400
+
+    courier = db.session.get(CourierModel, courier_id)
     if not courier:
         return jsonify({'message': 'Courier ID not found'}), 404
+
+
     order.courier = courier
     db.session.commit()
-    return jsonify({'message': 'Order is assigned to a courier'}), 200
+
+    return jsonify({'message': 'Order is assigned to the courier'}), 200
+
+
+# Retrieve all assigned orders
+@app.route('/admin/assigned-orders', methods=['GET'])
+def get_assigned_orders():
+    orders = OrderModel.query.filter(OrderModel.courier_id.isnot(None)).all() 
+    if not orders:
+        return jsonify({'message': 'No assigned orders found'}), 404
+    return jsonify([order.json() for order in orders]), 200
+
+
 #============================================================================
 #Courier and Admin Common features
 # Update Order Status

@@ -30,14 +30,14 @@ import { Router } from '@angular/router';
         <button class="btn primary" (click)="loadAssignedOrders()">Assigned Orders</button>
       </div>
 
-      <div *ngIf="loggedIn && !isCourier" class="button-group">
+      <div *ngIf="loggedIn && !isCourier && !isAdmin" class="button-group">
         <button class="btn primary" (click)="loadCreateOrder()">Create Order</button>
         <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
       </div>
 
       <div *ngIf="loggedIn && isAdmin" class="button-group">
         <button class="btn" (click)="loadManageOrders()">Manage Orders</button>
-        <button class="btn secondary" (click)="loadAssignOrder()">Assign Order to Courier</button>
+        <button class="btn secondary" (click)="loadAssignOrder()">Assigned Orders</button>
       </div>
 
       <ng-container #container></ng-container>

@@ -28,17 +28,14 @@ export class ManageOrdersComponent implements OnInit {
   couriers: { id: number, name: string }[] = [];
 
   constructor(private http: HttpClient, private router: Router, private formBuilder: FormBuilder) {
-    this.orderForm = this.formBuilder.group({
-      status: new FormControl(''),
-      assignedCourier: new FormControl('')
-    });
+    this.orderForm = this.formBuilder.group({});
   }
 
   ngOnInit(): void {
     this.fetchOrders();
     this.fetchCouriers();
   }
-  
+
   async fetchCouriers() {
     try {
       const response = await fetch('http://localhost:5000/couriers');
@@ -50,7 +47,7 @@ export class ManageOrdersComponent implements OnInit {
       console.error('Error fetching couriers:', error);
     }
   }
-  
+
   async fetchOrders() {
     try {
       const response = await fetch('http://localhost:5000/admin/AllOrders');
@@ -58,7 +55,7 @@ export class ManageOrdersComponent implements OnInit {
         throw new Error('Network response was not ok');
       }
       this.orders = await response.json();
-      // Initialize form controls for each order if needed
+
       this.orders.forEach(order => {
         this.orderForm.addControl(`status-${order.id}`, new FormControl(order.status));
         this.orderForm.addControl(`assignedCourier-${order.id}`, new FormControl(order.assignedCourier));
@@ -72,7 +69,7 @@ export class ManageOrdersComponent implements OnInit {
     const newStatus = this.orderForm.get(`status-${order.id}`)?.value;
     if (newStatus) {
       try {
-        const response = await fetch('http://localhost:5000/admin/update-order-status', {
+        const response = await fetch('http://localhost:5000/UpdateOrderStatus', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +90,7 @@ export class ManageOrdersComponent implements OnInit {
     const courierId = this.orderForm.get(`assignedCourier-${order.id}`)?.value;
     if (courierId) {
       try {
-        const response = await fetch('http://localhost:5000/admin/assign-courier', {
+        const response = await fetch('http://localhost:5000/AssignOrder', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -104,13 +101,16 @@ export class ManageOrdersComponent implements OnInit {
           throw new Error('Failed to assign courier');
         }
         await this.fetchOrders();
+
+        alert('Courier assigned successfully!');
       } catch (error) {
         console.error('Error assigning courier:', error);
       }
     } else {
-      alert('Please select a courier');
+      alert('Please enter a courier ID');
     }
   }
+  
 
   async deleteOrder(orderId: number): Promise<void> {
     if (confirm('Are you sure you want to delete this order?')) {
@@ -121,7 +121,7 @@ export class ManageOrdersComponent implements OnInit {
         if (!response.ok) {
           throw new Error('Failed to delete order');
         }
-        await this.fetchOrders(); 
+        await this.fetchOrders();
       } catch (error) {
         console.error('Error deleting order:', error);
       }

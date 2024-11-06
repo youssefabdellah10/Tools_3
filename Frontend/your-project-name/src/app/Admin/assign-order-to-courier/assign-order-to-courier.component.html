@@ -1,33 +1,39 @@
 <div class="assigned-orders">
   <h1>Assigned Orders to Couriers</h1>
-  <table>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <table *ngIf="orders.length > 0; else noOrders">
     <thead>
       <tr>
         <th>Order ID</th>
-        <th>Pickup Location</th>
-        <th>Dropoff Location</th>
-        <th>Package Details</th>
         <th>Status</th>
-        <th>Assigned Courier</th>
-        <th>Actions</th>
+        <th>Currently Assigned Courier</th>
+        <th>Reassign Order to Courier</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let order of orders">
         <td>{{ order.id }}</td>
-        <td>{{ order.pickup_location }}</td>
-        <td>{{ order.dropoff_location }}</td>
-        <td>{{ order.package_details }}</td>
         <td>{{ order.status }}</td>
         <td>
-          <select [(ngModel)]="order.assignedCourier.id" class="courier-select"> 
-            <option *ngFor="let courier of couriers" [value]="courier.id">{{ courier.name }}</option>
-          </select>
+   
+          {{ getCourierName(order.assignedCourier) }}
         </td>
         <td>
-          <button class="reassign-btn" (click)="reassignOrder(order.id, order.assignedCourier.id)">Reassign</button> 
+          <select [(ngModel)]="order.assignedCourier" class="courier-select" (change)="reassignOrder(order.id, order.assignedCourier)">
+            <option *ngFor="let courier of couriers" [value]="courier.id">
+              {{ courier.name }}
+            </option>
+          </select>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <ng-template #noOrders>
+    <div class="no-orders">No orders assigned to this courier.</div>
+  </ng-template>
 </div>
