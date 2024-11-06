@@ -3,7 +3,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { LoginComponent } from './login/login.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
-import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.component'; // Import AssignedOrdersComponent
+import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.component';
 import { ManageOrdersComponent } from './Admin/manage-orders/manage-orders.component';
 import { AssignOrderToCourierComponent } from './Admin/assign-order-to-courier/assign-order-to-courier.component';
 import { CommonModule } from '@angular/common';
@@ -30,22 +30,16 @@ import { Router } from '@angular/router';
         <button class="btn primary" (click)="loadAssignedOrders()">Assigned Orders</button>
       </div>
 
-      <div *ngIf="loggedIn">
-        <!-- Show different buttons based on whether the user is an admin -->
-        <div class="button-group" *ngIf="isAdmin; else userButtons">
-          <button class="btn" (click)="loadManageOrders()">Manage Orders</button>
-          <button class="btn secondary" (click)="loadAssignOrder()">Assign Order to Courier</button>
-        </div>
-
-        <ng-template #userButtons>
-          <div class="button-group">
-            <button class="btn" (click)="loadCreateOrder()">Create Order</button>
-            <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
-          </div>
-        </ng-template>
+      <div *ngIf="loggedIn && !isCourier" class="button-group">
+        <button class="btn primary" (click)="loadCreateOrder()">Create Order</button>
+        <button class="btn secondary" (click)="loadMyOrders()">My Orders</button>
       </div>
 
-      <!-- Dynamic content will be loaded here -->
+      <div *ngIf="loggedIn && isAdmin" class="button-group">
+        <button class="btn" (click)="loadManageOrders()">Manage Orders</button>
+        <button class="btn secondary" (click)="loadAssignOrder()">Assign Order to Courier</button>
+      </div>
+
       <ng-container #container></ng-container>
     </div>
   `,
@@ -114,7 +108,7 @@ export class AppComponent {
   @ViewChild('container', { read: ViewContainerRef }) container!: ViewContainerRef;
   loggedIn = false;
   isCourier = false;
-  isAdmin = false; 
+  isAdmin = false;
 
   constructor(private resolver: ComponentFactoryResolver, private router: Router) {}
 
@@ -133,26 +127,17 @@ export class AppComponent {
       console.log('Login successful, updating loggedIn status');
       this.loggedIn = true; 
       this.isCourier = role === 'courier';
+      this.isAdmin = role === 'admin';
       this.container.clear();
-      
-      if (this.isCourier) {
-        this.loadAssignedOrders();
-      } else {
-        this.loadCreateOrder();
-      console.log('Login successful, updating loggedIn status and navigating based on role');
-      this.loggedIn = true; 
-      this.isAdmin = role === 'admin'; // Set isAdmin based on the user's role
-      this.container.clear(); 
 
       if (role === 'admin') {
         this.router.navigate(['/admin-dashboard']);
-      } else if (role === 'user') {
-        this.router.navigate(['/create-order']);
       } else if (role === 'courier') {
-        this.router.navigate(['/assigned-orders']);
+        this.loadAssignedOrders();
+      } else {
+        this.loadCreateOrder();
       }
-    }});
-    
+    });
   }
 
   loadCreateOrder() {
@@ -170,7 +155,9 @@ export class AppComponent {
   loadAssignedOrders() {
     this.container.clear();
     const assignedOrdersFactory = this.resolver.resolveComponentFactory(AssignedOrdersComponent);
-    this.container.createComponent(assignedOrdersFactory);}
+    this.container.createComponent(assignedOrdersFactory);
+  }
+
   loadManageOrders() {
     this.container.clear();
     const manageOrdersFactory = this.resolver.resolveComponentFactory(ManageOrdersComponent);
@@ -182,5 +169,4 @@ export class AppComponent {
     const assignOrderFactory = this.resolver.resolveComponentFactory(AssignOrderToCourierComponent);
     this.container.createComponent(assignOrderFactory);
   }
-  
 }
