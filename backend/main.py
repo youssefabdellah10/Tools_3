@@ -136,6 +136,20 @@ def delete_order():
     db.session.commit()
     return jsonify({'message': 'Order is deleted'}), 200
 
+@app.route('/couriers', methods=['GET'])
+def get_couriers():
+    courier_id = request.args.get('courier_id', type=int)  # Optional filter by courier ID
+    
+    if courier_id:
+        courier = CourierModel.query.get(courier_id)
+        if not courier:
+            return jsonify({'message': 'Courier not found'}), 404
+        return jsonify(courier.json()), 200
+
+    couriers = CourierModel.query.all()
+    return jsonify([courier.json() for courier in couriers]), 200
+
+
 
     #Couruier features
 

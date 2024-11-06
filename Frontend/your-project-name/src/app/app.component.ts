@@ -52,7 +52,7 @@ import { Router } from '@angular/router';
   styles: [
     `
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: 60px auto;
       padding: 30px;
       border-radius: 12px;

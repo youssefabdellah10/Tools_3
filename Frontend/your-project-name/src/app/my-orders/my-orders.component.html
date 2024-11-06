@@ -7,7 +7,7 @@
 <div *ngIf="!loading && orders.length === 0" class="no-orders-message">No orders found.</div>
 
 <ul *ngIf="!loading && orders.length > 0" class="orders-list">
-  <li *ngFor="let order of orders" class="order-item" (click)="navigateToOrderDetails(order.id)">
+  <li *ngFor="let order of orders" class="order-item">
     <div class="order-details">
       <strong>Order ID:</strong> {{ order.id }}
     </div>
@@ -19,7 +19,16 @@
       </span>
     </div>
 
+    <button (click)="toggleOrderDetails(order.id)">
+      Show Order Details
+    </button>
+
+    <div *ngIf="expandedOrderId === order.id" class="order-expanded-details">
+      <p><strong>Pickup Location:</strong> {{ order.pickup_location || 'Not specified' }}</p>
+      <p><strong>Dropoff Location:</strong> {{ order.dropoff_location || 'Not specified' }}</p>
+      <p><strong>Package Details:</strong> {{ order.package_details || 'Not provided' }}</p>
+    </div>
+
     <hr class="order-separator" />
   </li>
 </ul>
-

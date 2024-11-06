@@ -6,12 +6,11 @@ import { CommonModule } from '@angular/common';
   selector: 'app-order-details',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './order-details.component.html',
-  styleUrls: ['./order-details.component.css']
+ 
 })
 export class OrderDetailsComponent implements OnInit {
   orderId: string = '';
-  order: any; // Store order details
+  order: any; 
   loading: boolean = true;
   errorMessage: string = '';
 
@@ -19,9 +18,14 @@ export class OrderDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.orderId = this.route.snapshot.paramMap.get('id') || '';
-    this.fetchOrderDetails(this.orderId);
+    if (this.orderId) {
+      this.fetchOrderDetails(this.orderId);
+    } else {
+      this.errorMessage = 'Order ID not found in the URL';
+      this.loading = false;
+    }
   }
-
+  
   fetchOrderDetails(orderId: string) {
     fetch(`http://localhost:5000/orders/${orderId}`)
       .then(response => {
@@ -32,7 +36,7 @@ export class OrderDetailsComponent implements OnInit {
       })
       .then(data => {
         this.order = data; 
-        this.loading = false; 
+        this.loading = false;
       })
       .catch(error => {
         console.error('Error:', error);
@@ -40,6 +44,7 @@ export class OrderDetailsComponent implements OnInit {
         this.loading = false; 
       });
   }
+  
 
   cancelOrder() {
     fetch(`http://localhost:5000/orders/${this.orderId}`, {

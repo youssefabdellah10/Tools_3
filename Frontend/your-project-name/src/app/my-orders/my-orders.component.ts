@@ -14,6 +14,7 @@ export class MyOrdersComponent implements OnInit {
   orders: any[] = [];
   loading: boolean = true;
   errorMessage: string = '';
+  expandedOrderId: string | null = null;  // Track which order is expanded
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -57,7 +58,11 @@ export class MyOrdersComponent implements OnInit {
     });
   }
 
-  navigateToOrderDetails(orderId: string) {
-    this.router.navigate(['/order-details', orderId]);
+  toggleOrderDetails(orderId: string) {
+    if (this.expandedOrderId === orderId) {
+      this.expandedOrderId = null;  
+    } else {
+      this.expandedOrderId = orderId;  
+    }
   }
 }

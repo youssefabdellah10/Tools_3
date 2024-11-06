@@ -8,6 +8,7 @@
         <th>Dropoff Location</th>
         <th>Package Details</th>
         <th>Status</th>
+        <th>Courier</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -18,13 +19,20 @@
         <td>{{ order.dropoff_location }}</td>
         <td>{{ order.package_details }}</td>
         <td class="status-cell">
-          <select [(ngModel)]="order.status">
+          <select formControlName="status">
             <option value="pending">Pending</option>
-            <option value="Delivered">Delivered</option>
+            <option value="delivered">Delivered</option>
           </select>
           <button class="confirm-btn" (click)="updateOrderStatus(order)">Confirm</button>
         </td>
-        <td>
+        <td class="courier-cell">
+          <select formControlName="assignedCourier">
+            <option value="">Select Courier</option>
+            <option *ngFor="let courier of couriers" [value]="courier.id">{{ courier.name }}</option>
+          </select>
+          <button class="confirm-btn" (click)="assignCourier(order)">Assign</button>
+        </td>
+        <td class="actions-cell">
           <button class="delete-btn" (click)="deleteOrder(order.id)">Delete</button>
         </td>
       </tr>

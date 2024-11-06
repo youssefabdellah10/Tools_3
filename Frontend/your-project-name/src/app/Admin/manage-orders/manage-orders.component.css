@@ -7,7 +7,7 @@
 
 h1 {
   font-family: 'Manrope', sans-serif;
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 20px;
   color: #333;
 }
@@ -15,6 +15,7 @@ h1 {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   margin-top: 20px;
 }
 
@@ -22,7 +23,7 @@ th, td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
-  
+  font-size: 18px;
 }
 
 th {
@@ -37,45 +38,50 @@ tr:nth-child(even) {
 tr:hover {
   background-color: #e9ecef;
 }
-.status-cell {
-  display: flex;
+
+.status-cell, .courier-cell, .actions-cell {
+ 
+  text-align: center;
+}
+
+.status-cell, .courier-cell {
+
   align-items: center;
 }
 
 select {
-  padding: 6px;
+  padding: 2px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-/* Confirm Button Styling */
-.confirm-btn {
-  background-color: #28a745; /* Green */
+.confirm-btn, .delete-btn {
+  padding: 8px 12px;
+  border-radius: 4px;
   color: white;
   border: none;
-  padding: 8px 12px;
-  margin-left: 8px; /* Space between select and button */
   cursor: pointer;
-  border-radius: 4px;
   transition: background-color 0.3s;
+  width: 100%;
+}
+
+.confirm-btn {
+  background-color: #28a745;
 }
 
 .confirm-btn:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #218838;
 }
 
-/* Delete Button Styling */
 .delete-btn {
-  background-color: #dc3545; /* Red */
-  padding: 8px 12px;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: #dc3545;
+  margin-top: 10px;
 }
 
 .delete-btn:hover {
-  background-color: #c82333; /* Darker red on hover */
+  background-color: #c82333;
 }
