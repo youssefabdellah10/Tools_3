@@ -6,7 +6,15 @@ import { CommonModule } from '@angular/common';
   selector: 'app-order-details',
   standalone: true,
   imports: [CommonModule],
- 
+  template: `
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div *ngIf="!loading && !errorMessage">
+      <h2>Order Details for Order ID: {{ orderId }}</h2>
+      <pre>{{ order | json }}</pre>
+      <button (click)="cancelOrder()">Cancel Order</button>
+    </div>
+  `
 })
 export class OrderDetailsComponent implements OnInit {
   orderId: string = '';
@@ -44,7 +52,6 @@ export class OrderDetailsComponent implements OnInit {
         this.loading = false; 
       });
   }
-  
 
   cancelOrder() {
     fetch(`http://localhost:5000/orders/${this.orderId}`, {
