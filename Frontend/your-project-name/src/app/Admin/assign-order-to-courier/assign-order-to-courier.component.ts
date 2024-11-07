@@ -9,7 +9,7 @@ interface AssignOrderToCourier {
   dropoff_location: string;
   package_details: string;
   status: string;
-  assignedCourier: number; 
+  courier_id: number;
 }
 
 @Component({
@@ -24,6 +24,7 @@ export class AssignOrderToCourierComponent implements OnInit {
   couriers: { id: number; name: string }[] = [];
   selectedCourierId: number | null = null;
   errorMessage: string = '';
+  selectedOrderId: number | null = null;
 
   constructor(private router: Router) {}
 
@@ -42,16 +43,14 @@ export class AssignOrderToCourierComponent implements OnInit {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      console.log('API response data:', data); 
       this.orders = data.filter((order: AssignOrderToCourier) => order.status !== 'delivered');
+      console.log('Filtered orders:', this.orders); 
     } catch (error) {
       this.handleError('Error fetching assigned orders:', error);
     }
   }
-
-  getCourierName(courierId: number): string {
-    const courier = this.couriers.find(courier => courier.id === courierId);
-    return courier ? courier.name : 'Unassigned';
-  }
+  
 
   private async fetchCouriers() {
     try {
@@ -70,30 +69,48 @@ export class AssignOrderToCourierComponent implements OnInit {
     this.errorMessage = message;
   }
 
-  onReassignOrder(orderId: number) {
-    if (this.selectedCourierId !== null) {
-      this.reassignOrder(orderId, this.selectedCourierId);
+  onReassignOrder(orderId: number, selectedCourierId: number) {
+    if (selectedCourierId) {
+      this.reassignOrder(orderId, selectedCourierId);
     } else {
       this.errorMessage = 'Please select a courier';
     }
   }
 
   async reassignOrder(orderId: number, newCourierId: number) {
+    if (newCourierId <= 0) {
+      this.errorMessage = 'Please select a valid courier';
+      return;
+    }
+  
+    console.log('Reassigning order ID:', orderId, 'to courier ID:', newCourierId);  
+  
     try {
-      const response = await fetch('http://localhost:5000/AssignOrder', {
+      const response = await fetch('http://localhost:5000/reassignOrder', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ orderId, courierId: newCourierId }),
       });
+  
+      if (!response.ok) {
+        throw new Error('Failed to reassign order');
+      }
+  
+      const updatedOrder = await response.json();
+      console.log('Updated order response:', updatedOrder); 
 
-      if (!response.ok) throw new Error('Failed to reassign order');
+      const orderIndex = this.orders.findIndex(order => order.id === orderId);
+      if (orderIndex !== -1) {
+        this.orders[orderIndex] = { ...this.orders[orderIndex], courier_id: newCourierId };
+      }
 
-      await this.fetchAssignedOrders();
+      alert('Order reassigned successfully!');
       this.selectedCourierId = null;
     } catch (error) {
       this.handleError('Error reassigning order:', error);
     }
   }
+  
 }

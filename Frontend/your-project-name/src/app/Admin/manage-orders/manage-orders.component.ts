@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http'; 
-import { HttpClientModule } from '@angular/common/http'; 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 interface Order {
@@ -18,44 +16,50 @@ interface Order {
 @Component({
   selector: 'app-manage-orders',
   standalone: true, 
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule], 
+  imports: [CommonModule, ReactiveFormsModule, FormsModule], 
   templateUrl: './manage-orders.component.html',
   styleUrls: ['./manage-orders.component.css']
 })
 export class ManageOrdersComponent implements OnInit {
   orders: Order[] = [];
-  orderForm: FormGroup;
   couriers: { id: number, name: string }[] = [];
+  orderForm: FormGroup;
 
-  constructor(private http: HttpClient, private router: Router, private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {
     this.orderForm = this.formBuilder.group({});
   }
 
   ngOnInit(): void {
-    this.fetchOrders();
-    this.fetchCouriers();
+    this.loadData();
   }
 
-  async fetchCouriers() {
+  private async loadData(): Promise<void> {
+    try {
+      await this.fetchOrders();
+      await this.fetchCouriers();
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  }
+
+  private async fetchCouriers(): Promise<void> {
     try {
       const response = await fetch('http://localhost:5000/couriers');
-      if (!response.ok) {
-        throw new Error('Failed to fetch couriers');
-      }
+      if (!response.ok) throw new Error('Failed to fetch couriers');
       this.couriers = await response.json();
     } catch (error) {
       console.error('Error fetching couriers:', error);
     }
   }
 
-  async fetchOrders() {
+  private async fetchOrders(): Promise<void> {
     try {
       const response = await fetch('http://localhost:5000/admin/AllOrders');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (!response.ok) throw new Error('Failed to fetch orders');
       this.orders = await response.json();
-
+      
+      console.log('Fetched orders:', this.orders);
+      
       this.orders.forEach(order => {
         this.orderForm.addControl(`status-${order.id}`, new FormControl(order.status));
         this.orderForm.addControl(`assignedCourier-${order.id}`, new FormControl(order.assignedCourier));
@@ -64,53 +68,44 @@ export class ManageOrdersComponent implements OnInit {
       console.error('Error fetching orders:', error);
     }
   }
+  
 
   async updateOrderStatus(order: Order): Promise<void> {
     const newStatus = this.orderForm.get(`status-${order.id}`)?.value;
     if (newStatus) {
-      try {
-        const response = await fetch('http://localhost:5000/UpdateOrderStatus', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId: order.id, status: newStatus }),
-        });
-        if (!response.ok) {
-          throw new Error('Failed to update order status');
-        }
-        await this.fetchOrders();
-      } catch (error) {
-        console.error('Error updating order status:', error);
-      }
+      await this.handleOrderUpdate('UpdateOrderStatus', { orderId: order.id, status: newStatus });
+    } else {
+      alert('Please select a status to update.');
     }
   }
 
   async assignCourier(order: Order): Promise<void> {
     const courierId = this.orderForm.get(`assignedCourier-${order.id}`)?.value;
     if (courierId) {
-      try {
-        const response = await fetch('http://localhost:5000/AssignOrder', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId: order.id, courierId }),
-        });
-        if (!response.ok) {
-          throw new Error('Failed to assign courier');
-        }
-        await this.fetchOrders();
-
-        alert('Courier assigned successfully!');
-      } catch (error) {
-        console.error('Error assigning courier:', error);
-      }
+      await this.handleOrderUpdate('AssignOrder', { orderId: order.id, courierId });
     } else {
-      alert('Please enter a courier ID');
+      alert('Please select a courier');
     }
   }
-  
+
+  private async handleOrderUpdate(endpoint: string, payload: any): Promise<void> {
+    try {
+      const response = await fetch(`http://localhost:5000/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Failed to update order');
+      await this.fetchOrders();
+      alert('Order updated successfully!');
+    } catch (error) {
+      console.error('Error updating order:', error);
+      alert('There was an error updating the order. Please try again.');
+    }
+  }
 
   async deleteOrder(orderId: number): Promise<void> {
     if (confirm('Are you sure you want to delete this order?')) {
@@ -118,12 +113,13 @@ export class ManageOrdersComponent implements OnInit {
         const response = await fetch(`http://localhost:5000/admin/delete/order?order_id=${orderId}`, {
           method: 'DELETE',
         });
-        if (!response.ok) {
-          throw new Error('Failed to delete order');
-        }
+
+        if (!response.ok) throw new Error('Failed to delete order');
         await this.fetchOrders();
+        alert('Order deleted successfully!');
       } catch (error) {
         console.error('Error deleting order:', error);
+        alert('There was an error deleting the order. Please try again.');
       }
     }
   }

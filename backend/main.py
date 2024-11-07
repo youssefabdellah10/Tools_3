@@ -149,8 +149,6 @@ def get_couriers():
     couriers = CourierModel.query.all()
     return jsonify([courier.json() for courier in couriers]), 200
 
-
-
     #Couruier features
 
 #get Courier orders
@@ -221,6 +219,32 @@ def assign_order_to_courier():
 
     return jsonify({'message': 'Order is assigned to the courier'}), 200
 
+@app.route('/reassignOrder', methods=['PUT'])
+def reassign_order_to_courier():
+    data = request.get_json()
+
+    order_id = data.get('orderId')  
+    courier_id = data.get('courierId')  
+
+    if not order_id:
+        return jsonify({'message': 'Bad Request, Please enter the order id you want to assign'}), 400
+
+    order = db.session.get(OrderModel, order_id)
+    if not order:
+        return jsonify({'message': 'Order ID not found'}), 404
+
+    if not courier_id:
+        return jsonify({'message': 'Bad Request, Please enter the Courier id you want to assign to'}), 400
+
+    courier = db.session.get(CourierModel, courier_id)
+    if not courier:
+        return jsonify({'message': 'Courier ID not found'}), 404
+
+    order.courier = courier
+    db.session.commit()
+
+    return jsonify({'message': f'Order is reassigned to the courier with ID: {order.courier_id}'}), 200
+
 
 # Retrieve all assigned orders
 @app.route('/admin/assigned-orders', methods=['GET'])
@@ -235,21 +259,26 @@ def get_assigned_orders():
 #Courier and Admin Common features
 # Update Order Status
 @app.route('/UpdateOrderStatus', methods=['PUT'])
-def update_orderStatus():
-    order_id = request.args.get('order_id',type=int)
-    status = request.args.get("status",type=str)
-    if not order_id:
-        return jsonify({'message': 'Bad Request, Please enter the order id you want to update'}), 400
-    order = db.session.get(OrderModel, order_id)
-    if  not order:
-        return jsonify({'message': 'Order ID not found'}), 404
-    order.status = status 
-    db.session.commit()
-    return jsonify({'message': 'Order status is updated'}), 200
-    
+def update_order_status():
+    try:
+        data = request.get_json()
+        order_id = data.get('orderId')
+        status = data.get('status')
 
+        if not order_id or not status:
+            return jsonify({'message': 'Bad Request, Please provide both order_id and status'}), 400
 
-    
+        order = db.session.get(OrderModel, order_id)
+
+        if not order:
+            return jsonify({'message': 'Order ID not found'}), 404
+
+        order.status = status
+        db.session.commit()
+
+        return jsonify({'message': 'Order status is updated'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Error: {str(e)}'}), 500
 
 if __name__ == '__main__':
     with app.app_context():
