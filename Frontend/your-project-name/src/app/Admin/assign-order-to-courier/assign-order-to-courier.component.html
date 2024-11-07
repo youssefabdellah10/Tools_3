@@ -11,23 +11,29 @@
         <th>Order ID</th>
         <th>Status</th>
         <th>Currently Assigned Courier</th>
-        <th>Reassign Order to Courier</th>
+        <th>Reassign Order to Courier (ID)</th>
+        <th>Confirm Reassign</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let order of orders">
         <td>{{ order.id }}</td>
         <td>{{ order.status }}</td>
+        <td>{{ order.courier_id }}</td>
         <td>
-   
-          {{ getCourierName(order.assignedCourier) }}
+          <input 
+            type="number" 
+            [(ngModel)]="order.courier_id"
+            class="courier-id-input"
+            placeholder="Enter Courier ID"
+            min="1">
         </td>
         <td>
-          <select [(ngModel)]="order.assignedCourier" class="courier-select" (change)="reassignOrder(order.id, order.assignedCourier)">
-            <option *ngFor="let courier of couriers" [value]="courier.id">
-              {{ courier.name }}
-            </option>
-          </select>
+          <button 
+            class="confirm-btn" 
+            (click)="reassignOrder(order.id, order.courier_id || 0)">
+            Confirm Reassign
+          </button>
         </td>
       </tr>
     </tbody>

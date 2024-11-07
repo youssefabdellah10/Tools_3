@@ -22,7 +22,7 @@
           <td>{{ order.package_details }}</td>
           <td class="status-cell">
 
-            <select formControlName="status-{{ order.id }}">
+            <select [formControlName]="'status-' + order.id">
               <option value="pending">Pending</option>
               <option value="delivered">Delivered</option>
             </select>
@@ -30,7 +30,7 @@
           </td>
           <td class="courier-cell">
  
-            <input type="number" placeholder="Enter Courier ID" formControlName="assignedCourier-{{ order.id }}" [min]="1">
+            <input type="number" placeholder="Enter Courier ID" [formControlName]="'assignedCourier-' + order.id" [min]="1">
             <button class="confirm-btn" (click)="assignCourier(order)">Assign</button>
           </td>
           <td class="actions-cell">

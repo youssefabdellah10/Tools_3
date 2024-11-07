@@ -48,17 +48,16 @@ tr:hover {
   background-color: #e9ecef;
 }
 
-.courier-select {
+.courier-id-input {
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
-  cursor: pointer;
   width: 100%;
   max-width: 200px;
 }
 
-.reassign-btn {
+.confirm-btn {
   padding: 8px 12px;
   border: none;
   background-color: #28a745;
@@ -71,17 +70,8 @@ tr:hover {
   max-width: 150px;
 }
 
-.reassign-btn:hover {
+.confirm-btn:hover {
   background-color: #218838;
 }
 
-@media (max-width: 768px) {
-  table {
-    font-size: 14px;
-  }
-  .courier-select,
-  .reassign-btn {
-    width: 100%;
-    max-width: 100%;
-  }
-}
+
