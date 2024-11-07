@@ -80,6 +80,10 @@ export class ManageOrdersComponent implements OnInit {
   }
 
   async assignCourier(order: Order): Promise<void> {
+    if (order.status === 'cancelled') {
+      alert('Cannot assign a courier to a cancelled order.');
+      return; 
+    }
     const courierId = this.orderForm.get(`assignedCourier-${order.id}`)?.value;
     if (courierId) {
       await this.handleOrderUpdate('AssignOrder', { orderId: order.id, courierId });
