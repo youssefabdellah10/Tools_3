@@ -65,4 +65,31 @@ export class MyOrdersComponent implements OnInit {
       this.expandedOrderId = orderId;  
     }
   }
-}
+  cancelOrder(orderId: string) {
+    fetch(`http://localhost:5000/cancelOrder?order_id=${orderId}`, {
+      method: 'PUT',
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to cancel order');
+        }
+      })
+      .then(data => {
+        console.log(data.message); // Log the success message
+  
+        // Remove the canceled order from the orders list
+        this.orders = this.orders.filter(order => order.id !== orderId);
+        
+        // Optionally reset any expanded order details if it was the canceled one
+        if (this.expandedOrderId === orderId) {
+          this.expandedOrderId = null;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        this.errorMessage = 'Error cancelling order: ' + error.message;
+      });
+  }
+}  

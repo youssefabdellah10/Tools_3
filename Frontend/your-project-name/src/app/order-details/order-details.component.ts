@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
     <div *ngIf="!loading && !errorMessage">
       <h2>Order Details for Order ID: {{ orderId }}</h2>
       <pre>{{ order | json }}</pre>
-      <button (click)="cancelOrder()">Cancel Order</button>
     </div>
   `
 })
@@ -51,22 +50,5 @@ export class OrderDetailsComponent implements OnInit {
         this.errorMessage = 'Error fetching order details: ' + error.message;
         this.loading = false; 
       });
-  }
-
-  cancelOrder() {
-    fetch(`http://localhost:5000/orders/${this.orderId}`, {
-      method: 'DELETE',
-    })
-    .then(response => {
-      if (response.ok) {
-        this.router.navigate(['/my-orders']);
-      } else {
-        throw new Error('Failed to cancel order');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      this.errorMessage = 'Error cancelling order: ' + error.message;
-    });
   }
 }

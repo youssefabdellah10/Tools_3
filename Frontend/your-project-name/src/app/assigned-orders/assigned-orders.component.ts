@@ -2,24 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common'; // Import CommonModule
+import { CommonModule } from '@angular/common'; 
 
 interface Order {
   id: number;
   status: string;
-  details: string;
+  pickup_location?: string;
+  dropoff_location?: string;
+  package_details?: string;  
 }
-
 @Component({
   selector: 'app-assigned-orders',
   templateUrl: './assigned-orders.component.html',
   styleUrls: ['./assigned-orders.component.css'],
   standalone: true,
-  imports: [HttpClientModule, CommonModule], // Add CommonModule here
+  imports: [HttpClientModule, CommonModule],
 })
 export class AssignedOrdersComponent implements OnInit {
   orders: Order[] = [];
-  courierId: number = 1; // Replace with actual courier ID from authentication if available
+  selectedOrderDetails: Order | null = null; 
+  courierId: number = 1;
 
   constructor(private http: HttpClient) {}
 
@@ -32,15 +34,15 @@ export class AssignedOrdersComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Error fetching assigned orders:', error);
-          return of([]);  // Return an empty array in case of error
+          return of([]); 
         })
       )
       .subscribe((data) => {
         console.log('Fetched orders:', data);
-        this.orders = Array.isArray(data) ? data : []; // Ensure orders is an array
+        this.orders = Array.isArray(data) ? data : [];
       });
   }
-  
+
   acceptOrder(orderId: number): void {
     this.http.put('http://localhost:5000/acceptOrder', { order_id: orderId })
       .subscribe(() => {
@@ -60,4 +62,21 @@ export class AssignedOrdersComponent implements OnInit {
         console.error('Error declining order:', error);
       });
   }
+
+  updateOrderStatus(orderId: number, status: string): void {
+    this.http.put('http://localhost:5000/UpdateOrderStatus', { orderId, status })
+      .subscribe(() => {
+        this.orders = this.orders.map(order =>
+          order.id === orderId ? { ...order, status } : order
+        );
+      }, error => {
+        console.error('Error updating order status:', error);
+      });
+  }
+  
+  canUpdateStatus(order: Order): boolean {
+
+    return order.status === 'picked up';
+  }
+  
 }

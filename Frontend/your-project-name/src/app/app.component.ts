@@ -8,11 +8,12 @@ import { ManageOrdersComponent } from './Admin/manage-orders/manage-orders.compo
 import { AssignOrderToCourierComponent } from './Admin/assign-order-to-courier/assign-order-to-courier.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,HttpClientModule],
   template: `
     <div class="container">
       <h1>Welcome to Our Application</h1>
@@ -28,6 +29,7 @@ import { Router } from '@angular/router';
 
       <div *ngIf="loggedIn && isCourier" class="button-group">
         <button class="btn primary" (click)="loadAssignedOrders()">Assigned Orders</button>
+
       </div>
 
       <div *ngIf="loggedIn && !isCourier && !isAdmin" class="button-group">
@@ -169,4 +171,6 @@ export class AppComponent {
     const assignOrderFactory = this.resolver.resolveComponentFactory(AssignOrderToCourierComponent);
     this.container.createComponent(assignOrderFactory);
   }
+  
+  
 }

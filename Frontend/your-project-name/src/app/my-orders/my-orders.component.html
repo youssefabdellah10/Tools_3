@@ -19,6 +19,15 @@
       </span>
     </div>
 
+    <button
+  *ngIf="order.status === 'pending'"
+  (click)="cancelOrder(order.id)"
+  class="cancel-order-button"
+>
+  Cancel Order
+</button>
+
+
     <button (click)="toggleOrderDetails(order.id)">
       Show Order Details
     </button>

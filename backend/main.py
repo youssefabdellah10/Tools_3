@@ -149,6 +149,28 @@ def get_couriers():
     couriers = CourierModel.query.all()
     return jsonify([courier.json() for courier in couriers]), 200
 
+# Cancel Order if it's still pending
+@app.route('/cancelOrder', methods=['PUT'])
+def cancel_order():
+    order_id = request.args.get('order_id', type=int)
+    if not order_id:
+        return jsonify({'message': 'Bad Request, please enter a valid order ID'}), 400
+
+    # Fetch the order from the database
+    order = db.session.get(OrderModel, order_id)
+    if not order:
+        return jsonify({'message': 'Order ID not found'}), 404
+
+    # Check if the order status is 'pending'
+    if order.status != 'pending':
+        return jsonify({'message': 'Order cannot be canceled as it is not in a pending state'}), 400
+
+    # Update the order status to 'canceled'
+    order.status = 'canceled'
+    db.session.commit()
+    return jsonify({'message': 'Order has been successfully canceled'}), 200
+
+
     #Couruier features
 
 #get Courier orders
@@ -217,7 +239,7 @@ def assign_order_to_courier():
     order.courier = courier
     db.session.commit()
 
-    return jsonify({'message': 'Order is assigned to the courier with ID: '+order.courier_id}), 200
+    return jsonify({'message': 'Order is assigned to the courier'}), 200
 
 
 # Retrieve all assigned orders

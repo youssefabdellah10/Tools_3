@@ -12,14 +12,14 @@ import { CommonModule } from '@angular/common';
 export class CreateOrderComponent {
   createOrderForm: FormGroup;
   loading = false;
-  userId = 1; // Set this to the actual user ID from your authentication context
+  userId = 1; 
 
   constructor(private formBuilder: FormBuilder) {
     this.createOrderForm = this.formBuilder.group({
       pickup_location: ['', Validators.required],
       dropoff_location: ['', Validators.required],
       package_details: ['', Validators.required], 
-      delivery_time: [''] // This remains the same
+      delivery_time: [''] 
     });
   }
 
@@ -28,7 +28,7 @@ export class CreateOrderComponent {
       this.loading = true;
       const orderData = {
         ...this.createOrderForm.value,
-        user_id: this.userId // Include user ID in the order data
+        user_id: this.userId
       };
 
       fetch('http://localhost:5000/orders/create', {

@@ -87,6 +87,13 @@
   color: #f39c12;
 }
 
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+  align-items: center;
+}
+
 button {
   margin-top: 15px;
   padding: 12px 20px;
@@ -97,6 +104,7 @@ button {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 button:hover {
@@ -105,4 +113,27 @@ button:hover {
 
 button:focus {
   outline: none;
+}
+
+.cancel-order-button {
+  margin-top: 20px;  
+  padding: 12px 20px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 1em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%; 
+}
+
+.cancel-order-button:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.cancel-order-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.5);
 }

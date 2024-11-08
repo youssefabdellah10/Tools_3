@@ -61,7 +61,7 @@ export class UserInfoComponent {
   }
 
   private registerUser(data: any) {
-    fetch('http://localhost:5000/signup', {  // Adjusted endpoint to match your backend route
+    fetch('http://localhost:5000/signup', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +80,6 @@ export class UserInfoComponent {
       console.log('Success:', data);
       alert('Registration successful!');
 
-      // Emit the user data on successful registration
       this.registrationComplete.emit({ email: data.email, password: data.password, role: data.role });
     })
     .catch(error => {
