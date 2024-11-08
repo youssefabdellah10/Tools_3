@@ -44,12 +44,13 @@ export class AssignOrderToCourierComponent implements OnInit {
       }
       const data = await response.json();
       console.log('API response data:', data); 
-      this.orders = data.filter((order: AssignOrderToCourier) => order.status !== 'delivered');
+      this.orders = data.filter((order: AssignOrderToCourier) => order.status !== 'in transit' && order.status !== 'delivered');
       console.log('Filtered orders:', this.orders); 
     } catch (error) {
       this.handleError('Error fetching assigned orders:', error);
     }
   }
+  
   
 
   private async fetchCouriers() {
@@ -86,7 +87,7 @@ export class AssignOrderToCourierComponent implements OnInit {
     console.log('Reassigning order ID:', orderId, 'to courier ID:', newCourierId);  
   
     try {
-      const response = await fetch('http://localhost:5000/reassignOrder', {
+      const response = await fetch('http://localhost:5000/AssignOrder', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

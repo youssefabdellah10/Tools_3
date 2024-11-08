@@ -14,7 +14,7 @@
 
     <div class="order-status">
       <strong>Status:</strong>
-      <span [ngClass]="{'delivered': order.status === 'delivered', 'pending': order.status === 'pending'}">
+      <span [ngClass]="{'delivered': order.status === 'delivered', 'pending': order.status === 'pending', 'in transit': order.status === 'in-transit'}">
         {{ order.status }}
       </span>
     </div>

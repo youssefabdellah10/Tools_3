@@ -24,6 +24,7 @@
 
             <select [formControlName]="'status-' + order.id">
               <option value="pending">Pending</option>
+              <option value="in transit">In transit</option>
               <option value="delivered">Delivered</option>
             </select>
             <button class="confirm-btn" (click)="updateOrderStatus(order)">Confirm</button>

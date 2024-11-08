@@ -84,6 +84,10 @@ export class ManageOrdersComponent implements OnInit {
       alert('Cannot assign a courier to a cancelled order.');
       return; 
     }
+    if (order.status === 'in transit') {
+      alert('Cannot assign a courier to an order in transit.');
+      return; 
+    }
     const courierId = this.orderForm.get(`assignedCourier-${order.id}`)?.value;
     if (courierId) {
       await this.handleOrderUpdate('AssignOrder', { orderId: order.id, courierId });

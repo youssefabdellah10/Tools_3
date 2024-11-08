@@ -84,7 +84,11 @@
 }
 
 .pending {
-  color: #f39c12;
+  color:#dfd021;
+}
+
+.in-transit {
+  color: #f39c12 ;
 }
 
 .button-group {
