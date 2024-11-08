@@ -82,7 +82,7 @@ def create_order():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': str(e)}), 400
-    return jsonify(new_order.json()), 201
+    return jsonify(new_order.json()), 200
 
 @app.route('/users/order', methods=['GET'])
 def get_user_orders():
