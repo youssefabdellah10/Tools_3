@@ -3,7 +3,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
-
+import { AuthService } from '../auth.service'; 
 interface Order {
   id: number;
   status: string;
@@ -21,15 +21,21 @@ interface Order {
 export class AssignedOrdersComponent implements OnInit {
   orders: Order[] = [];
   selectedOrderDetails: Order | null = null; 
-  courierId: number = 1;
+  courierId: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.getAssignedOrders();
+    this.courierId = this.authService.getUserId();  // Retrieve the courier ID from AuthService
+    if (this.courierId) {
+      this.getAssignedOrders();
+    } else {
+      console.error("Courier ID not found");
+    }
   }
 
   getAssignedOrders(): void {
+    if (!this.courierId) return;
     this.http.get<Order[]>(`http://localhost:5000/CourierOrder?courier_id=${this.courierId}`)
       .pipe(
         catchError(error => {
@@ -42,6 +48,7 @@ export class AssignedOrdersComponent implements OnInit {
         this.orders = Array.isArray(data) ? data : [];
       });
   }
+
 
   acceptOrder(orderId: number): void {
     this.http.put('http://localhost:5000/acceptOrder', { order_id: orderId })

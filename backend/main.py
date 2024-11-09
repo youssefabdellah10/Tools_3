@@ -56,13 +56,11 @@ def login():
     if user and user.check_password(data['password']):
         return jsonify({'message': 'Logged in successfully', 'role': 'user', 'userId': user.id}), 200 
     elif courier and courier.check_password(data['password']):
-        return jsonify({'message': 'Logged in successfully', 'role': 'courier', 'courierId': courier.id}), 200 
-
+        return jsonify({'message': 'Logged in successfully', 'role': 'courier', 'userId': courier.id}), 200
     elif admin and admin.check_password(data['password']):
         return jsonify({'message': 'Logged in successfully', 'role': 'admin', 'userId': admin.id}), 200 
     else:
         return jsonify({'message': 'Incorrect email or password, please try again'}), 404
-
 
 #======================================================================================================================#
 #=========Orders==================#
