@@ -61,7 +61,7 @@ export class UserInfoComponent {
   }
 
   private registerUser(data: any) {
-    fetch('http://localhost:5000/signup', { 
+    fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/signup', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

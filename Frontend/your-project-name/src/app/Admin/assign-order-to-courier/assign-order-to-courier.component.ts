@@ -38,7 +38,7 @@ export class AssignOrderToCourierComponent implements OnInit {
 
   private async fetchAssignedOrders() {
     try {
-      const response = await fetch('http://localhost:5000/admin/assigned-orders');
+      const response = await fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/admin/assigned-orders');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -55,7 +55,7 @@ export class AssignOrderToCourierComponent implements OnInit {
 
   private async fetchCouriers() {
     try {
-      const response = await fetch('http://localhost:5000/couriers');
+      const response = await fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/couriers');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -87,7 +87,7 @@ export class AssignOrderToCourierComponent implements OnInit {
     console.log('Reassigning order ID:', orderId, 'to courier ID:', newCourierId);  
   
     try {
-      const response = await fetch('http://localhost:5000/AssignOrder', {
+      const response = await fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/AssignOrder', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

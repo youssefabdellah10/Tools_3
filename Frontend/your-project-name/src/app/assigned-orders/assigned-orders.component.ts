@@ -36,7 +36,7 @@ export class AssignedOrdersComponent implements OnInit {
 
   getAssignedOrders(): void {
     if (!this.courierId) return;
-    this.http.get<Order[]>(`http://localhost:5000/CourierOrder?courier_id=${this.courierId}`)
+    this.http.get<Order[]>(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/CourierOrder?courier_id=${this.courierId}`)
       .pipe(
         catchError(error => {
           console.error('Error fetching assigned orders:', error);
@@ -51,7 +51,7 @@ export class AssignedOrdersComponent implements OnInit {
 
 
   acceptOrder(orderId: number): void {
-    this.http.put('http://localhost:5000/acceptOrder', { order_id: orderId })
+    this.http.put('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/acceptOrder', { order_id: orderId })
       .subscribe(() => {
         this.orders = this.orders.map(order =>
           order.id === orderId ? { ...order, status: 'picked up' } : order
@@ -62,7 +62,7 @@ export class AssignedOrdersComponent implements OnInit {
   }
 
   declineOrder(orderId: number): void {
-    this.http.put('http://localhost:5000/DeclineOrder', { order_id: orderId })
+    this.http.put('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/DeclineOrder', { order_id: orderId })
       .subscribe(() => {
         this.orders = this.orders.filter(order => order.id !== orderId);
       }, error => {
@@ -71,7 +71,7 @@ export class AssignedOrdersComponent implements OnInit {
   }
 
   updateOrderStatus(orderId: number, status: string): void {
-    this.http.put('http://localhost:5000/UpdateOrderStatus', { orderId, status })
+    this.http.put('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/UpdateOrderStatus', { orderId, status })
       .subscribe(() => {
         this.orders = this.orders.map(order =>
           order.id === orderId ? { ...order, status } : order

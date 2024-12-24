@@ -44,7 +44,7 @@ export class ManageOrdersComponent implements OnInit {
 
   private async fetchCouriers(): Promise<void> {
     try {
-      const response = await fetch('http://localhost:5000/couriers');
+      const response = await fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/couriers');
       if (!response.ok) throw new Error('Failed to fetch couriers');
       this.couriers = await response.json();
     } catch (error) {
@@ -54,7 +54,7 @@ export class ManageOrdersComponent implements OnInit {
 
   private async fetchOrders(): Promise<void> {
     try {
-      const response = await fetch('http://localhost:5000/admin/AllOrders');
+      const response = await fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/admin/AllOrders');
       if (!response.ok) throw new Error('Failed to fetch orders');
       this.orders = await response.json();
       
@@ -98,7 +98,7 @@ export class ManageOrdersComponent implements OnInit {
 
   private async handleOrderUpdate(endpoint: string, payload: any): Promise<void> {
     try {
-      const response = await fetch(`http://localhost:5000/${endpoint}`, {
+      const response = await fetch(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ export class ManageOrdersComponent implements OnInit {
   async deleteOrder(orderId: number): Promise<void> {
     if (confirm('Are you sure you want to delete this order?')) {
       try {
-        const response = await fetch(`http://localhost:5000/admin/delete/order?order_id=${orderId}`, {
+        const response = await fetch(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/admin/delete/order?order_id=${orderId}`, {
           method: 'DELETE',
         });
 

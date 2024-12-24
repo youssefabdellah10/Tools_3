@@ -31,7 +31,7 @@ export class MyOrdersComponent implements OnInit {
       return;
     }
   
-    fetch(`http://localhost:5000/users/order?user_id=${userId}`, {
+    fetch(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/users/order?user_id=${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ export class MyOrdersComponent implements OnInit {
     }
   }
   cancelOrder(orderId: string) {
-    fetch(`http://localhost:5000/cancelOrder?order_id=${orderId}`, {
+    fetch(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/cancelOrder?order_id=${orderId}`, {
       method: 'PUT',
     })
       .then(response => {
