@@ -4,13 +4,13 @@ FROM node:18
 WORKDIR /usr/local/app
 
 # Copy package.json and package-lock.json
-COPY your-project-name/package.json your-project-name/package-lock.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install 
 
 # Copy the rest of the application code
-COPY your-project-name .
+COPY . .
 
 RUN chmod -R 777 /usr/local/app
 
