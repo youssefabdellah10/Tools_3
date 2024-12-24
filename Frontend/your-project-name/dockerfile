@@ -12,6 +12,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+RUN chmod -R 777 /usr/local/app
+
 # Expose port 4200
 EXPOSE 4200
 
