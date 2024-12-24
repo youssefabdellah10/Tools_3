@@ -40,7 +40,7 @@ export class CreateOrderComponent {
         user_id: userId
       };
 
-      fetch('https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/orders/create', {
+      fetch('https://tools-3-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -34,7 +34,7 @@ export class OrderDetailsComponent implements OnInit {
   }
   
   fetchOrderDetails(orderId: string) {
-    fetch(`https://my-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/orders/${orderId}`)
+    fetch(`https://tools-3-backend-youssefabdellah10-dev.apps.rm3.7wse.p1.openshiftapps.com/orders/${orderId}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch order details');
